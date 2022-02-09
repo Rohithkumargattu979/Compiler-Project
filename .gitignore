@@ -1,1 +1,2 @@
-.exe
+# should ignore exe files
+/a.exe
