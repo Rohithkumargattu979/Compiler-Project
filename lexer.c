@@ -206,6 +206,56 @@ token getNextToken(FILE *fp, char* buffer,int bufsize){
             token.tokenId = 72;
             token.tokenString = "TK_SQCLOSE";
         }
+        else if(buffer[offset] >= '0' && buffer[offset] <= '9'){
+            char* str1;
+            char* str2 = buffer[offset];
+            strcat(str1, str2);
+            offset++;
+            state = 123;
+            while(buffer[offset] >= '0' && buffer[offset] <='9'){
+                str2 = buffer[offset];
+                strcat(str1, str2);
+                state = 123;
+                offset++;
+            }
+            int flag = 0;
+            char* fll = "";
+            if(buffer[offset] == '.'){
+                flag = 1;
+                state = 124;
+                char* str3 = buffer[offset];
+                offset++;
+                strcat(fll,str3);
+                while(buffer[offset] >= '0' && buffer[offset] <='9'){
+                    str3 = buffer[offset];
+                    strcat(fll,str3);
+                    state = 124;
+                    offset++;
+                }
+            }
+            int MAX_FLOAT_LEN = 10;
+            int MAX_INT_LEN = 8;
+            if(flag == 0){
+                if(strlen(str1) <= MAX_INT_LEN){ // len before '.'
+                    token.tokenId = 73;
+                    token.tokenString = "TK_INT";
+                }
+                else{
+                    ///// handle error
+                }
+                
+            }
+            else{
+                if(strlen(fll) <=MAX_FLOAT_LEN){
+                    token.tokenId = 74;
+                    token.tokenString = "TK_FLOAT";
+                }
+                else{
+                    // handle error
+                }
+            }
+            token.value = strcat(str1,fll); 
+        }
         
     }
 
