@@ -1,13 +1,7 @@
-/* 
-GROUP NO: 30
-ROHITH KUMAR GATTU - 2019A7PS0049H
-ROHAN RAO NALLANI - 2019A7PS0048H
-KASINA SATWIK - 2019A7PS0011H
-SRIKAR SASHANK M - 2019A7PS0160H
-*/
 
-#ifndef LEXERDEF_INCLUDED
-#define LEXERDEF_INCLUDED
+
+#ifndef LEXERDEF_H
+#define LEXERDEF_H
 
 #include<stdio.h>
 
@@ -18,7 +12,6 @@ typedef struct{
     int line;
 } token;
 // token that should be generated
-
 typedef struct{
     char* keyWord;
     int tokenId;

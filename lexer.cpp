@@ -1,26 +1,41 @@
-#include<stdio.h>
-#include"lexer.h"
-#include"lexerDef.h"
-#include<stdlib.h>
-#include<string.h>
-#define true 1
-FILE *getStream(FILE* fp,char* buffer,int bsize){
-	int count;
-	if(!feof(fp))
-		count=fread(buffer,1,bsize,fp);
+#include<bits/stdc++.h>
+#include<fstream>
+#include<iostream>
+using namespace std;
+typedef struct{
+    int tokenId;
+    string value;
+    string tokenString;
+    int line;
+} token;
+// token that should be generated
+typedef struct{
+    string keyWord;
+    int tokenId;
+} hashTable; // hashtable attributes
 
-	if(count<bsize)
-	buffer[count] = '\0';
 
-	return fp;
+int state;
+int offset = 0;
+int lexicalError;
+int lineNo;
 
-}
-hashTable** ht;
-long long hashFunc(char* str){
+void createLexerHashTable();
+long long hashFunction(string string);
+int lookupFunction(string lexeme);
+
+void removeComments(FILE* testfile);
+
+int getLexErrors();
+void resetLexErrors();
+
+// ------------------------------------------------------------------------------------------------- //
+map<int,hashTable> ht;
+long long hashFunc(string str){
     long long p=31;
     long long mod=1e9+7;
     long long ans=0;
-    for(int i=0;i<strlen(str);i++){
+    for(int i=0;i<str.size();i++){
         ans+=((str[i]*p)%mod);
         p*=p;
         p%=mod;
@@ -28,20 +43,18 @@ long long hashFunc(char* str){
     }
     return mod;
 }
-int lookup(char* lexeme){
+int lookup(string lexeme){
 
 	int in=hashFunc(lexeme);
-	if(ht[in]!=NULL && !strcmp(ht[in]->keyWord,lexeme)){
+	if(ht.find(in) != ht.end() && !(ht[in].keyWord == lexeme)){
 
-		return ht[in]->tokenId;
+		return ht[in].tokenId;
 	}
 	return -1;
 
 }
 void createLexerHashTable(){
 	const int m=1e2+9;
-
-	ht=(hashTable**)malloc(m*sizeof(ht));
 	
 	char keywords[11][15]={"Int","Float","If","Else","For","While",
 	"Return","String","Void","Array", "Main"}; //add few keywords if needed
@@ -49,28 +62,29 @@ void createLexerHashTable(){
 	int tokenids[11]={1,2,3,4,5,6,7,8,9,10,11};
 
 	for(int j=0;j<11;j++){
-		ht[hashFunc(keywords[j])]=(hashTable*)malloc(sizeof(ht));
-		ht[hashFunc(keywords[j])]->keyWord=(char*)malloc(15*sizeof(char));
-		strcpy(ht[hashFunc(keywords[j])]->keyWord,keywords[j]);
-		ht[hashFunc(keywords[j])]->tokenId=tokenids[j];
+        ht[hashFunc(keywords[j])].keyWord = keywords[j];
+		ht[hashFunc(keywords[j])].tokenId=tokenids[j];
 	}
 
 }
-offset = 0;
-token getNextToken(FILE *fp, char* buffer,int bufsize){
-    if(ftell(fp)==0){
-		createLexerHashTable();
-	}
+
+// we should add extra params
+token getNextLexeme(vector<char>& buffer){ 
 	state = 1;
-	char* lexeme = (char*) malloc(bufsize*sizeof(char));
-	memset(lexeme, 0, bufsize);
+    string lexeme;
 	int i = 0;
 	token token;
-	token.value = (char*) malloc(bufsize*sizeof(char));
+	token.value = "";
 	token.tokenId=0;
     token.tokenString = "";
 
     while(true){
+        if(offset >= buffer.size()){
+            token.value = "@";
+            token.tokenId = 420;
+            token.tokenString = "TK_EOF";
+            return token;
+        }
         //printf("hello");
         if(buffer[offset] == '&'){
             offset++;
@@ -80,12 +94,14 @@ token getNextToken(FILE *fp, char* buffer,int bufsize){
                 token.tokenId = 51; 
                 token.tokenString = "TK_LOGAND"; 
                 offset++;
+                return token;
             }
             else{
                 state = 2;
                 token.value = "&";
                 token.tokenId = 50; 
                 token.tokenString = "TK_AND"; 
+                return token;
             }
 
         }
@@ -97,12 +113,14 @@ token getNextToken(FILE *fp, char* buffer,int bufsize){
                 token.tokenId = 53;
                 token.tokenString = "TK_LOGOR";
                 offset++;
+                return token;
             }
             else{
                 state = 3;
                 token.value = "|";
                 token.tokenId = 52;
                 token.tokenString = "TK_OR";
+                return token;
             }
         }
         else if(buffer[offset] == '+'){
@@ -111,6 +129,7 @@ token getNextToken(FILE *fp, char* buffer,int bufsize){
             token.value = "+";
             token.tokenId = 54;
             token.tokenString = "TK_ADD";
+            return token;
         }
         else if(buffer[offset] == '-'){
             offset++;
@@ -118,13 +137,16 @@ token getNextToken(FILE *fp, char* buffer,int bufsize){
             token.value = "-";
             token.tokenId = 55;
             token.tokenString = "TK_MINUS";
+            return token;
         }
         else if(buffer[offset] == '*'){
+            cout<<"fuckoff"<<endl;
             offset++;
             state = 106;
             token.value = "*";
             token.tokenId = 56;
             token.tokenString = "TK_MUL";
+            return token;
         }
         else if(buffer[offset] == '/'){
             offset++;
@@ -132,6 +154,7 @@ token getNextToken(FILE *fp, char* buffer,int bufsize){
             token.value = "/";
             token.tokenId = 57;
             token.tokenString = "TK_DIV";
+            return token;
         }
         else if(buffer[offset] == '%'){
             offset++;
@@ -139,6 +162,7 @@ token getNextToken(FILE *fp, char* buffer,int bufsize){
             token.value = "o/o";
             token.tokenId = 58;
             token.tokenString = "TK_MOD";
+            return token;
         }
         else if(buffer[offset] == '!'){
             offset++;
@@ -148,12 +172,14 @@ token getNextToken(FILE *fp, char* buffer,int bufsize){
                 token.tokenId = 60; 
                 token.tokenString = "TK_NOTEQ"; 
                 offset++;
+                return token;
             }
             else{
                 state = 109;
                 token.value = "!";
                 token.tokenId = 59; 
                 token.tokenString = "TK_NOT"; 
+                return token;
             }
         }
         else if(buffer[offset] == '>'){
@@ -164,12 +190,14 @@ token getNextToken(FILE *fp, char* buffer,int bufsize){
                 token.tokenId = 62; 
                 token.tokenString = "TK_GEQ"; 
                 offset++;
+                return token;
             }
             else{
                 state = 111;
                 token.value = ">";
                 token.tokenId = 61; 
                 token.tokenString = "TK_GET"; 
+                return token;
             }
         }
         else if(buffer[offset] == '<'){
@@ -180,12 +208,14 @@ token getNextToken(FILE *fp, char* buffer,int bufsize){
                 token.tokenId = 64; 
                 token.tokenString = "TK_LEQ"; 
                 offset++;
+                return token;
             }
             else{
                 state = 113;
                 token.value = "<";
                 token.tokenId = 63; 
                 token.tokenString = "TK_LET"; 
+                return token;
             }
         }
         else if(buffer[offset] == '='){
@@ -196,6 +226,7 @@ token getNextToken(FILE *fp, char* buffer,int bufsize){
                 token.tokenId = 65; 
                 token.tokenString = "TK_EQUALS"; 
                 offset++;
+                return token;
             }
             else{
                 // error 
@@ -207,6 +238,7 @@ token getNextToken(FILE *fp, char* buffer,int bufsize){
             token.value = ":";
             token.tokenId = 66;
             token.tokenString = "TK_ASSIGN";
+            return token;
         }
         else if(buffer[offset] == '{'){
             offset++;
@@ -214,6 +246,7 @@ token getNextToken(FILE *fp, char* buffer,int bufsize){
             token.value = "{";
             token.tokenId = 67;
             token.tokenString = "TK_FLOPEN";
+            return token;
         }
         else if(buffer[offset] == '}'){
             offset++;
@@ -221,6 +254,7 @@ token getNextToken(FILE *fp, char* buffer,int bufsize){
             token.value = "}";
             token.tokenId = 68;
             token.tokenString = "TK_FLCLOSE";
+            return token;
         }
         else if(buffer[offset] == '('){
             offset++;
@@ -228,6 +262,7 @@ token getNextToken(FILE *fp, char* buffer,int bufsize){
             token.value = "(";
             token.tokenId = 69;
             token.tokenString = "TK_SMOPEN";
+            return token;
         }
         else if(buffer[offset] == ')'){
             offset++;
@@ -235,6 +270,7 @@ token getNextToken(FILE *fp, char* buffer,int bufsize){
             token.value = ")";
             token.tokenId = 70;
             token.tokenString = "TK_SMCLOSE";
+            return token;
         }
         else if(buffer[offset] == '['){
             offset++;
@@ -242,6 +278,7 @@ token getNextToken(FILE *fp, char* buffer,int bufsize){
             token.value = "[";
             token.tokenId = 71;
             token.tokenString = "TK_SQOPEN";
+            return token;
         }
         else if(buffer[offset] == ']'){
             offset++;
@@ -249,30 +286,31 @@ token getNextToken(FILE *fp, char* buffer,int bufsize){
             token.value = "]";
             token.tokenId = 72;
             token.tokenString = "TK_SQCLOSE";
+            return token;
         }
         else if(buffer[offset] >= '0' && buffer[offset] <= '9'){
-            char* str1;
-            char* str2 = buffer[offset];
-            strcat(str1, str2);
+            string str1;
+            char str2 = buffer[offset];
+            str1 = str1 + str2;
             offset++;
             state = 123;
             while(buffer[offset] >= '0' && buffer[offset] <='9'){
                 str2 = buffer[offset];
-                strcat(str1, str2);
+                str1 += str2;
                 state = 123;
                 offset++;
             }
             int flag = 0;
-            char* fll = "";
+            string fll = "";
             if(buffer[offset] == '.'){
                 flag = 1;
                 state = 124;
-                char* str3 = buffer[offset];
+                char str3 = buffer[offset];
                 offset++;
-                strcat(fll,str3);
+                fll += str3;
                 while(buffer[offset] >= '0' && buffer[offset] <='9'){
                     str3 = buffer[offset];
-                    strcat(fll,str3);
+                    fll += str3;
                     state = 124;
                     offset++;
                 }
@@ -280,9 +318,10 @@ token getNextToken(FILE *fp, char* buffer,int bufsize){
             int MAX_FLOAT_LEN = 10;
             int MAX_INT_LEN = 8;
             if(flag == 0){
-                if(strlen(str1) <= MAX_INT_LEN){ // len before '.'
+                if(str1.size() <= MAX_INT_LEN){ // len before '.'
                     token.tokenId = 73;
                     token.tokenString = "TK_INT";
+                    return token;
                 }
                 else{
                     ///// handle error
@@ -290,51 +329,54 @@ token getNextToken(FILE *fp, char* buffer,int bufsize){
                 
             }
             else{
-                if(strlen(fll) <=MAX_FLOAT_LEN){
+                if(fll.size() <=MAX_FLOAT_LEN){
                     token.tokenId = 74;
                     token.tokenString = "TK_FLOAT";
+                    return token;
                 }
                 else{
                     // handle error
                 }
             }
-            token.value = strcat(str1,fll); 
+            token.value =str1+fll; 
+            return token;
         }
         else if(buffer[offset]=='"'){
-            char* str1;
-            char* str2 = buffer[offset];
-            strcat(str1, str2);
+            string str1;
+            char str2 = buffer[offset];
+            str1 += str2;
             offset++;
             while(buffer[offset]!='"'){
                 str2=buffer[offset];
-                strcat(str1, str2);
+                str1 += str2;
                 offset++;
             }
-            strcat(str1,str2);
+            str1+=str2;
             offset++;
             token.value = str1;
             token.tokenId = 75;
             token.tokenString = "TK_STRING";
+            return token;
         }
         else if(buffer[offset] >= 'A' && buffer[offset] <= 'Z'){
-            char* str;
-            strcat(str,buffer[offset]);
+            string str;
+            str += buffer[offset];
             offset++;
             while(buffer[offset] >= 'a' && buffer[offset] <= 'z'){
-                strcat(str,buffer[offset]);
+                str += buffer[offset];
                 offset++;
                 if(lookup(str) != -1){
-                    token.tokenId = ht[hashFunc(str)]->tokenId;
+                    token.tokenId = ht[hashFunc(str)].tokenId;
                     token.value = str;
-                    token.tokenString = strcat("TK_",ht[hashFunc(str)]->keyWord);
+                    token.tokenString = "TK_" + ht[hashFunc(str)].keyWord;
                     return token;
                 }
             }
             // handle error
         }
         else if(buffer[offset] >= 'a' && buffer[offset] <='z'){
-            char* str;
-            strcat(str,buffer[offset]);
+            string str;
+            str +=  buffer[offset];
             int flagalpha = 0;
             int flagnum = 0;
             offset++;
@@ -343,7 +385,7 @@ token getNextToken(FILE *fp, char* buffer,int bufsize){
             if(flagalpha == 0){
                 while(buffer[offset] >='a' && buffer[offset] <='z'){
                     flagalpha = 1;
-                    strcat(str,(char*)buffer[offset]);
+                    str += buffer[offset];
                     offset++;
                     len++;
                     if(len > MAX_VARIABLE_LEN){
@@ -358,7 +400,7 @@ token getNextToken(FILE *fp, char* buffer,int bufsize){
                 
                 while(buffer[offset] >='0' && buffer[offset] <='9'){
                     flagnum = 1;
-                    strcat(str,(char*)buffer[offset]);
+                    str += buffer[offset];
                     offset++;
                     len++;  
                     if(len > MAX_VARIABLE_LEN){
@@ -375,28 +417,25 @@ token getNextToken(FILE *fp, char* buffer,int bufsize){
         }
     }
     return token;
-        
 }
 
 
 int main(){
-    FILE* fp;
-    fp = fopen("input.txt","r");
-    int bufsize = 20;
-    char buffer[] = "";
-    char c = fgetc(fp);
-    while(c != EOF){
-        printf("%c\n", c);
-        //printf("%s\n", buffer);
-        //strcat(buffer,&c);
-        //printf("%s\n", buffer);
-        c = fgetc(fp);
+    string filename("input.txt");
+    vector<char> bytes;
+    ifstream input_file(filename);
+    char byte;
+    while(input_file.get(byte)){
+        bytes.push_back(byte);
     }
-    //printf("%s", buffer);
-    printf("fuck1");
-    //token t = getNextToken(fp, buffer, bufsize);
-    // printf("fuck3");
-    // printf("%d", t.tokenId);
-    // printf("%s", t.tokenString);
-    // printf("%s", t.value);
+    int morenice = 420; 
+    token ans = getNextLexeme(bytes);
+    int halwa = ans.tokenId;
+    while(halwa != morenice){
+        ans = getNextLexeme(bytes);
+        cout<<ans.tokenId<<" "<<ans.tokenString;
+        cout<<endl;
+        halwa = ans.tokenId;
+    }
+    
 }
