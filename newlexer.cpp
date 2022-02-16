@@ -33,20 +33,20 @@ void resetLexErrors();
 map<int,hashTable> ht;
 long long hashFunc(string str){
     long long p=31;
-    long long mod=1e9+7;
+    long long mod=1e2+9;
     long long ans=0;
     for(int i=0;i<str.size();i++){
         ans+=((str[i]*p)%mod);
-        p*=p;
+        p=p*p;
         p%=mod;
 
     }
-    return mod;
+    return ans;
 }
 int lookup(string lexeme){
 
 	int in=hashFunc(lexeme);
-	if(ht.find(in) != ht.end() && !(ht[in].keyWord == lexeme)){
+	if(ht.find(in) != ht.end() && (ht[in].keyWord == lexeme)){
 
 		return ht[in].tokenId;
 	}
@@ -62,8 +62,14 @@ void createLexerHashTable(){
 	int tokenids[11]={1,2,3,4,5,6,7,8,9,10,11};
 
 	for(int j=0;j<11;j++){
-        ht[hashFunc(keywords[j])].keyWord = keywords[j];
-		ht[hashFunc(keywords[j])].tokenId=tokenids[j];
+        hashTable t;
+        
+        t.keyWord = keywords[j];
+		t.tokenId=tokenids[j];
+        // cout<<hashFunc(keywords[j])<<endl;
+        ht[hashFunc(keywords[j])]=t;
+        //  ht[hashFunc(keywords[j])].keyWord=keywords[j];
+        //   ht[hashFunc(keywords[j])].tokenId=tokenids[j];
 	}
 
 }
@@ -86,6 +92,25 @@ token getNextLexeme(vector<char>& buffer){
             return token;
         }
         //printf("hello");
+        if(buffer[offset]=='\t'||buffer[offset]==' '||buffer[offset]=='\n'){
+           if(buffer[offset]=='\n'){
+            lineNo++;
+            }
+            offset++;
+           state=1;
+           token.tokenId=22;//note this
+           token.value= "&";
+           token.tokenString="TK_SPACE";
+           return token;
+        }
+        if(buffer[offset]==';'){
+            offset++;
+            state=1;
+            token.value=";";
+            token.tokenString="TK_SEMICOLON";
+            token.tokenId=401;
+            return token;
+        }
         if(buffer[offset] == '&'){
             offset++;
             if(buffer[offset] == '&'){
@@ -126,6 +151,62 @@ token getNextLexeme(vector<char>& buffer){
         else if(buffer[offset] == '+'){
             offset++;
             state = 104;
+            if(buffer[offset] >= '0' && buffer[offset] <= '9'){
+            string str1;
+            char str2 = buffer[offset];
+            str1 = str1 + str2;
+            offset++;
+            state = 123;
+            while(buffer[offset] >= '0' && buffer[offset] <='9'){
+                str2 = buffer[offset];
+                str1 += str2;
+                state = 123;
+                offset++;
+            }
+            int flag = 0;
+            string fll = "";
+            if(buffer[offset] == '.'){
+               
+                flag = 1;
+                state = 124;
+                char str3 = buffer[offset];
+                offset++;
+                fll += str3;
+                while(buffer[offset] >= '0' && buffer[offset] <='9'){
+                    str3 = buffer[offset];
+                    fll += str3;
+                    state = 124;
+                    offset++;
+                }
+            }
+            int MAX_FLOAT_LEN = 10;
+            int MAX_INT_LEN = 8;
+            if(flag == 0){
+                if(str1.size() <= MAX_INT_LEN){ // len before '.'
+                    token.tokenId = 73;
+                    token.tokenString = "TK_INT";
+                    token.value="+"+str1;
+                    return token;
+                }
+                else{
+                    ///// handle error
+                }
+                
+            }
+            else{
+                if(fll.size() <=MAX_FLOAT_LEN){
+                    token.tokenId = 74;
+                    token.tokenString = "TK_FLOAT";
+                    token.value="+"+str1+fll;
+                    return token;
+                }
+                else{
+                    // handle error
+                }
+            }
+            token.value =str1+fll; 
+            return token;
+        }
             token.value = "+";
             token.tokenId = 54;
             token.tokenString = "TK_ADD";
@@ -134,6 +215,62 @@ token getNextLexeme(vector<char>& buffer){
         else if(buffer[offset] == '-'){
             offset++;
             state = 105;
+            if(buffer[offset] >= '0' && buffer[offset] <= '9'){
+            string str1;
+            char str2 = buffer[offset];
+            str1 = str1 + str2;
+            offset++;
+            state = 123;
+            while(buffer[offset] >= '0' && buffer[offset] <='9'){
+                str2 = buffer[offset];
+                str1 += str2;
+                state = 123;
+                offset++;
+            }
+            int flag = 0;
+            string fll = "";
+            if(buffer[offset] == '.'){
+               
+                flag = 1;
+                state = 124;
+                char str3 = buffer[offset];
+                offset++;
+                fll += str3;
+                while(buffer[offset] >= '0' && buffer[offset] <='9'){
+                    str3 = buffer[offset];
+                    fll += str3;
+                    state = 124;
+                    offset++;
+                }
+            }
+            int MAX_FLOAT_LEN = 10;
+            int MAX_INT_LEN = 8;
+            if(flag == 0){
+                if(str1.size() <= MAX_INT_LEN){ // len before '.'
+                    token.tokenId = 73;
+                    token.tokenString = "TK_INT";
+                    token.value="-"+str1;
+                    return token;
+                }
+                else{
+                    ///// handle error
+                }
+                
+            }
+            else{
+                if(fll.size() <=MAX_FLOAT_LEN){
+                    token.tokenId = 74;
+                    token.tokenString = "TK_FLOAT";
+                    token.value="-"+str1+fll;
+                    return token;
+                }
+                else{
+                    // handle error
+                }
+            }
+            token.value =str1+fll; 
+            return token;
+        }
             token.value = "-";
             token.tokenId = 55;
             token.tokenString = "TK_MINUS";
@@ -230,6 +367,7 @@ token getNextLexeme(vector<char>& buffer){
             }
             else{
                 // error 
+                cout<<"line:"<<lineNo<<":no such symbol probably try changing to : or =="<<endl;
             }
         }
         else if(buffer[offset] == ':'){
@@ -303,6 +441,7 @@ token getNextLexeme(vector<char>& buffer){
             int flag = 0;
             string fll = "";
             if(buffer[offset] == '.'){
+               
                 flag = 1;
                 state = 124;
                 char str3 = buffer[offset];
@@ -321,6 +460,7 @@ token getNextLexeme(vector<char>& buffer){
                 if(str1.size() <= MAX_INT_LEN){ // len before '.'
                     token.tokenId = 73;
                     token.tokenString = "TK_INT";
+                    token.value=str1;
                     return token;
                 }
                 else{
@@ -332,6 +472,7 @@ token getNextLexeme(vector<char>& buffer){
                 if(fll.size() <=MAX_FLOAT_LEN){
                     token.tokenId = 74;
                     token.tokenString = "TK_FLOAT";
+                    token.value=str1+fll;
                     return token;
                 }
                 else{
@@ -351,11 +492,15 @@ token getNextLexeme(vector<char>& buffer){
                 str1 += str2;
                 offset++;
             }
-            str1+=str2;
+            str1+=buffer[offset];
             offset++;
+            //found a bug -now debugged
+            // cout<<"hello"<<endl;
             token.value = str1;
             token.tokenId = 75;
             token.tokenString = "TK_STRING";
+            // cout<<"hello2"<<endl;
+            // cout<<token.tokenId<<" "<<token.tokenString<<endl;
             return token;
         }
         else if(buffer[offset] >= 'A' && buffer[offset] <= 'Z'){
@@ -365,6 +510,8 @@ token getNextLexeme(vector<char>& buffer){
             while(buffer[offset] >= 'a' && buffer[offset] <= 'z'){
                 str += buffer[offset];
                 offset++;
+                // cout<<"<hello"<<endl;
+                // cout<<str<<"****"<<lookup(str)<<endl;
                 if(lookup(str) != -1){
                     token.tokenId = ht[hashFunc(str)].tokenId;
                     token.value = str;
@@ -373,6 +520,9 @@ token getNextLexeme(vector<char>& buffer){
                 }
             }
             // handle error
+            cout<<"no such keyword:"<<str<<"please check syntax"<<endl;
+            //******we need to change this token to error token
+            return token;
         }
         else if(buffer[offset] >= 'a' && buffer[offset] <='z'){
             string str;
@@ -414,28 +564,78 @@ token getNextLexeme(vector<char>& buffer){
             else{
                 // error
             }   
+        }else{
+        cout<<"error check syntax"<<endl;
+        offset++;
+        token.value="error_token";
+        token.tokenString="TK_ERROR";
+        token.tokenId=404;
+        return token;
         }
+        
     }
     return token;
 }
 
-
-int main(){
-    string filename("test1.txt");
+void printTokenList(vector<char>& bytes){
+    int morenice = 420; 
+    token ans = getNextLexeme(bytes);
+    int halwa = ans.tokenId;
+    //also check for error lexeme
+    while(halwa != morenice){
+        
+        if(ans.tokenId!=22){
+        cout<<ans.tokenId<<" "<<ans.tokenString<<" "<<ans.value<<" "<<lineNo;
+        cout<<endl;
+        }
+        ans = getNextLexeme(bytes);
+        halwa = ans.tokenId;
+    }
+}
+ vector<char> getInputStream(string str_name){
+    string filename(str_name);
     vector<char> bytes;
     ifstream input_file(filename);
     char byte;
     while(input_file.get(byte)){
         bytes.push_back(byte);
     }
-    int morenice = 420; 
-    token ans = getNextLexeme(bytes);
-    int halwa = ans.tokenId;
-    while(halwa != morenice){
-        ans = getNextLexeme(bytes);
-        cout<<ans.tokenId<<" "<<ans.tokenString;
-        cout<<endl;
-        halwa = ans.tokenId;
+    return bytes;
+}
+string removeAllComments(string fileName){
+    string filename(fileName);
+    vector<char> bytes;
+    char byte;
+    ifstream input_file(filename);
+    string output_file_name="removedComments.txt";
+    ofstream opFile(output_file_name);
+    while(input_file.get(byte)){
+       //handles single line comments (# content)
+       if(byte=='#'){
+         while(byte!='\n'){
+             input_file.get(byte);
+         }
+        //  input_file.get(byte);
+       }
+       //handles multiline comments {$ content $}
+       if(byte=='$'){
+           while(byte!='$'){
+             input_file.get(byte);
+         }
+          input_file.get(byte);
+       }
+        
+        opFile<<byte;
     }
+    
+    return output_file_name;
+}
+int main(){
+    lineNo=1;
+    createLexerHashTable();
+    string fileName="test1.txt";//can take as a user input
+    string f2=removeAllComments(fileName);//this returns the filename of the new file with no comments
+    vector<char> bytes=getInputStream(f2);
+    printTokenList(bytes);
     
 }
