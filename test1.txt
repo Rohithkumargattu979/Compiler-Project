@@ -1,6 +1,15 @@
-"int" Main(){
+"int" @main(){
     "int" :30;
     Return ;
+}
+@functiont("int" "a"){
+
+}
+@your(){
+
+}
+@mine(){
+     @your ;
 }
 #ihello re hash
 ()

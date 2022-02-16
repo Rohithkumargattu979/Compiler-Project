@@ -80,7 +80,7 @@ void createLexerHashTable(){
 	const int m=1e2+9;
 	
 	char keywords[11][15]={"Int","Float","If","Else","For","While",
-	"Return","String","Void","Array", "Main"}; //add few keywords if needed
+	"Return","String","Void","Array", "main"}; //add few keywords if needed
 
 	int tokenids[11]={1,2,3,4,5,6,7,8,9,10,11};
 
@@ -97,7 +97,7 @@ void createLexerHashTable(){
 
 }
 bool checkMain(string funName){
-    return funName == "Main";
+    return funName == "main";
 }
 token createFuncToken(string funName){
     token ans;
@@ -108,13 +108,40 @@ token createFuncToken(string funName){
     funct fun;
     fun.token = ans;
     fun.name = funName;
+    fun.lineNo=lineNo;
     st.funct_list.push_back(fun);
     st.funct_map[funName] = fun;
+    return ans;
+}
+token addMain(){
+    token ans;
+    string str="main";
+    // cout<<"hello&&&&&&&&&&&&&&&&&&&&&&&&"<<endl;
+    ans.tokenId= ht[hashFunc(str)].tokenId;
+    ans.value= "mainFunc";
+    ans.tokenString="TK_MAIN";
+    funct fun;
+    fun.token=ans;
+    fun.lineNo=lineNo;
+    fun.name=str;
+    st.funct_list.push_back(fun);
+    st.funct_map[str]=fun;
+
     return ans;
 }
 token checkFunc(string funName){
     token t;
     map<string,funct> mp = st.funct_map;
+    // cout<<checkMain(funName)<<"#####################"<<endl;
+    if(checkMain(funName)){
+        if(mp.find(funName)==mp.end()){
+            t=addMain();
+            return t;
+        }else{
+            return mp[funName].token;
+        }
+    }
+    
     if(mp.find(funName) == mp.end()){
        t = createFuncToken(funName);
     }
@@ -613,13 +640,19 @@ token getNextLexeme(vector<char>& buffer){
                 // error
             }   
         }
-        else if(buffer[offset] == '$'){
+        else if(buffer[offset] == '@'){
             offset++;
-            string str = "$";
+            string str = "";//not included $
+            // cout<<str<<"@@@@"<<endl;
             while(buffer[offset] >= 'a' && buffer[offset] <='z'){
+                 str += buffer[offset];
                 offset++;
-                str += buffer[offset];
+                // cout<<str<<"@@@@"<<endl;
+               
             }
+            // cout<<str<<"@@@@"<<endl;
+            token =checkFunc(str);
+            return token;
             
         }
         else{
