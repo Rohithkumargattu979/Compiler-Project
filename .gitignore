@@ -1,0 +1,3 @@
+# should ignore exe files
+a.exe
+.vscode
