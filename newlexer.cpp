@@ -14,11 +14,39 @@ typedef struct{
     int tokenId;
 } hashTable; // hashtable attributes
 
+typedef struct{
+    string identifier;
+    string scope;
+    string type;
+    int lineNo;
+    token token;
+} variable;
+
+typedef struct{
+    int specialId;
+    string name;
+    string lineNo;
+    token token;
+    vector<variable> funct_variable_list;
+    map<string,variable> funct_variable_map;
+} funct; // assumption : atmost 1000 variables will only be present in any function
+
+typedef struct{
+    vector<variable> variable_list;
+    vector<funct> funct_list;
+    map<string,funct> funct_map;
+} symbolTable;
+
+symbolTable st;
+
+stack<string> functStack;
 
 int state;
 int offset = 0;
 int lexicalError;
 int lineNo;
+int funcToken = 10000;
+int specialfunid = 10001;
 
 void createLexerHashTable();
 long long hashFunction(string string);
@@ -28,7 +56,8 @@ void removeComments(FILE* testfile);
 
 int getLexErrors();
 void resetLexErrors();
-
+string PREV_FUN_NAME = "Global";
+string CUR_FUN_NAME;
 // ------------------------------------------------------------------------------------------------- //
 map<int,hashTable> ht;
 long long hashFunc(string str){
@@ -39,7 +68,6 @@ long long hashFunc(string str){
         ans+=((str[i]*p)%mod);
         p=p*p;
         p%=mod;
-
     }
     return ans;
 }
@@ -57,7 +85,7 @@ void createLexerHashTable(){
 	const int m=1e2+9;
 	
 	char keywords[11][15]={"Int","Float","If","Else","For","While",
-	"Return","String","Void","Array", "Main"}; //add few keywords if needed
+	"Return","String","Void","Array", "main"}; //add few keywords if needed
 
 	int tokenids[11]={1,2,3,4,5,6,7,8,9,10,11};
 
@@ -73,8 +101,131 @@ void createLexerHashTable(){
 	}
 
 }
+string getCurFun(){
+    return CUR_FUN_NAME;
+}
+void updateCurFun(string newName){
+    CUR_FUN_NAME = newName;
+}
+bool checkMain(string funName){
+    return funName == "main";
+}
+token createFuncToken(string funName){
+    token ans;
+    ans.tokenId = funcToken;
+    ans.value = funName;
+    ans.tokenString = "TK_FUNCT";
+    funcToken += 1000;
+    funct fun;
+    fun.specialId = specialfunid;
+    specialfunid += 1000;
+    fun.token = ans;
+    fun.name = funName;
+    fun.lineNo=lineNo;
+    st.funct_list.push_back(fun);
+    functStack.push(funName);
+    updateCurFun(funName);
+    st.funct_map[funName] = fun;
+    return ans;
+}
+token addMain(){
+    token ans;
+    string str="main";
+    // cout<<"hello&&&&&&&&&&&&&&&&&&&&&&&&"<<endl;
+    ans.tokenId= ht[hashFunc(str)].tokenId;
+    ans.value= "mainFunc";
+    ans.tokenString="TK_MAIN";
+    funct fun;
+    fun.token=ans;
+    fun.lineNo=lineNo;
+    fun.name=str;
+    st.funct_list.push_back(fun);
+    updateCurFun(str);
+    st.funct_map[str]=fun;
+    functStack.push(str);
+    return ans;
+}
+token addGlobalFun(){
+    functStack.push("Global");
+    funct fun;
+    fun.name = "Global";
+    fun.specialId = specialfunid;
+    specialfunid += 1000;
+    token ans;
+    ans.tokenId = funcToken;
+    funcToken += 1000;
+    ans.tokenString = "TK_GLOBALFUNC";
+    ans.value = fun.name;
+    st.funct_list.push_back(fun);
+    st.funct_map[fun.name] = fun;
+    return ans;
+}
+void updateAtEnd(){
+    if(functStack.size() >1){
+        functStack.pop();
+    }
+    CUR_FUN_NAME = functStack.top();
 
-// we should add extra params
+}
+token checkFunc(string funName){
+    token t;
+    map<string,funct> mp = st.funct_map;
+    // cout<<checkMain(funName)<<"#####################"<<endl;
+    if(checkMain(funName)){
+        if(mp.find(funName)==mp.end()){
+            t=addMain();
+            return t;
+        }else{
+            return mp[funName].token;
+        }
+    }
+    
+    if(mp.find(funName) == mp.end()){
+       t = createFuncToken(funName);
+    }
+    else{
+        t = mp[funName].token;
+    }
+    return t;
+}
+token createVariableToken(string newVariable){
+    token ans;
+    ans.tokenId = st.funct_map[getCurFun()].specialId;
+    st.funct_map[getCurFun()].specialId++;
+    ans.tokenString = "TK_VARIABLE";
+    ans.value = newVariable;
+    return ans;
+}
+variable createNewVariable(string newVariable){
+    string curfun = getCurFun();
+    funct fun = st.funct_map[curfun];
+    map<string,variable> mp = fun.funct_variable_map;
+    variable ans;
+    if(mp.find(newVariable) == mp.end()){
+        ans.identifier = newVariable;
+        ans.scope = getCurFun();
+        ans.lineNo = lineNo;
+        ans.token = createFuncToken(newVariable);
+        fun.funct_variable_map[newVariable] = ans;
+        fun.funct_variable_list.push_back(ans);
+    }
+    else{
+        ans = mp[newVariable];
+    }
+    return ans;
+    
+    
+}
+
+token addVariable(string newVariable){
+    string curfun = getCurFun();
+    funct fun = st.funct_map[curfun];
+    variable var = createNewVariable(newVariable);
+    return var.token;
+
+}
+// ------------------------------------------------------------------------- //
+// we should add extra params 
 token getNextLexeme(vector<char>& buffer){ 
 	state = 1;
     string lexeme;
@@ -277,7 +428,6 @@ token getNextLexeme(vector<char>& buffer){
             return token;
         }
         else if(buffer[offset] == '*'){
-            cout<<"fuckoff"<<endl;
             offset++;
             state = 106;
             token.value = "*";
@@ -296,7 +446,7 @@ token getNextLexeme(vector<char>& buffer){
         else if(buffer[offset] == '%'){
             offset++;
             state = 108;
-            token.value = "o/o";
+            token.value = "%";
             token.tokenId = 58;
             token.tokenString = "TK_MOD";
             return token;
@@ -533,7 +683,7 @@ token getNextLexeme(vector<char>& buffer){
             int MAX_VARIABLE_LEN = 15;
             int len = 1;
             if(flagalpha == 0){
-                while(buffer[offset] >='a' && buffer[offset] <='z'){
+                while(buffer[offset] >='a' && buffer[offset] <='z'){ // min two alphas must be there to name a var
                     flagalpha = 1;
                     str += buffer[offset];
                     offset++;
@@ -560,11 +710,40 @@ token getNextLexeme(vector<char>& buffer){
                 if(flagnum == 0){
                     // handle error
                 }
+                else{
+                    token = createVariableToken(str);
+                    return token;
+                }
             }
             else{
                 // error
-            }   
-        }else{
+            }
+
+        }
+        else if(buffer[offset] == '@'){
+            offset++;
+            string str = "";//not included $
+            // cout<<str<<"@@@@"<<endl;
+            while(buffer[offset] >= 'a' && buffer[offset] <='z'){
+                 str += buffer[offset];
+                offset++;
+                // cout<<str<<"@@@@"<<endl;
+               
+            }
+            // cout<<str<<"@@@@"<<endl;
+            token =checkFunc(str);
+            return token;
+            
+        }
+        else if(buffer[offset] == '~'){
+            offset++;
+            token.tokenId = 76;
+            token.value = "~";
+            token.tokenString = "TK_FUNCTEND";
+            updateAtEnd();
+            return token;
+        }
+        else{
         cout<<"error check syntax"<<endl;
         offset++;
         token.value="error_token";
@@ -633,6 +812,10 @@ string removeAllComments(string fileName){
 int main(){
     lineNo=1;
     createLexerHashTable();
+    token t = addGlobalFun();
+    cout<<t.tokenId<<endl;
+    cout<<t.tokenString<<endl;
+    cout<<t.value<<endl;
     string fileName="test1.txt";//can take as a user input
     string f2=removeAllComments(fileName);//this returns the filename of the new file with no comments
     vector<char> bytes=getInputStream(f2);
