@@ -1,16 +1,17 @@
 "int" @main(){
     "int" :30;
     Return ;
-}
+}~
 @functiont("int" "a"){
 
-}
+}~
 @your(){
-
-}
+    rohith143
+}~
 @mine(){
-     @your ;
-}
+    hikasina11
+    @your ;
+}~
 #ihello re hash
 ()
 = - *
@@ -20,3 +21,5 @@
 -96
 "horny"
 #incluison
+abc123
+aa12345565

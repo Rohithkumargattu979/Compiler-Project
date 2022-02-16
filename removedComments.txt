@@ -1,16 +1,17 @@
 "int" @main(){
     "int" :30;
     Return ;
-}
+}~
 @functiont("int" "a"){
 
-}
+}~
 @your(){
-
-}
+    rohith143
+}~
 @mine(){
-     @your ;
-}
+    hikasina11
+    @your ;
+}~
 
 ()
 = - *
@@ -20,3 +21,5 @@
 -96
 "horny"
 
+abc123
+aa12345565

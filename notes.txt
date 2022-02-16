@@ -1,0 +1,5 @@
+language specifications:
+1. To name a variable we there has to be atleast two alphas followed by any number of digits considering, 
+total length of variable name is not more than 15.
+2. Our function starts with '@' and ends with '~'.
+3. Data Types = Float, Int, String
