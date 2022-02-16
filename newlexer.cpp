@@ -14,11 +14,34 @@ typedef struct{
     int tokenId;
 } hashTable; // hashtable attributes
 
+typedef struct{
+    string identifier;
+    string scope;
+    string type;
+    int lineNo;
+    token token;
+} variable;
+
+typedef struct{
+    string name;
+    string lineNo;
+    token token;
+    vector<variable> funct_variable_list;
+} funct;
+
+typedef struct{
+    vector<variable> variable_list;
+    vector<funct> funct_list;
+    map<string,funct> funct_map;
+} symbolTable;
+
+symbolTable st;
 
 int state;
 int offset = 0;
 int lexicalError;
 int lineNo;
+int funcToken = 10000;
 
 void createLexerHashTable();
 long long hashFunction(string string);
@@ -73,8 +96,34 @@ void createLexerHashTable(){
 	}
 
 }
-
-// we should add extra params
+bool checkMain(string funName){
+    return funName == "Main";
+}
+token createFuncToken(string funName){
+    token ans;
+    ans.tokenId = funcToken;
+    ans.value = funName;
+    ans.tokenString = "TK_FUNCT";
+    funcToken++;
+    funct fun;
+    fun.token = ans;
+    fun.name = funName;
+    st.funct_list.push_back(fun);
+    st.funct_map[funName] = fun;
+    return ans;
+}
+token checkFunc(string funName){
+    token t;
+    map<string,funct> mp = st.funct_map;
+    if(mp.find(funName) == mp.end()){
+       t = createFuncToken(funName);
+    }
+    else{
+        t = mp[funName].token;
+    }
+    return t;
+}
+// we should add extra params 
 token getNextLexeme(vector<char>& buffer){ 
 	state = 1;
     string lexeme;
@@ -277,7 +326,6 @@ token getNextLexeme(vector<char>& buffer){
             return token;
         }
         else if(buffer[offset] == '*'){
-            cout<<"fuckoff"<<endl;
             offset++;
             state = 106;
             token.value = "*";
@@ -564,7 +612,17 @@ token getNextLexeme(vector<char>& buffer){
             else{
                 // error
             }   
-        }else{
+        }
+        else if(buffer[offset] == '$'){
+            offset++;
+            string str = "$";
+            while(buffer[offset] >= 'a' && buffer[offset] <='z'){
+                offset++;
+                str += buffer[offset];
+            }
+            
+        }
+        else{
         cout<<"error check syntax"<<endl;
         offset++;
         token.value="error_token";
