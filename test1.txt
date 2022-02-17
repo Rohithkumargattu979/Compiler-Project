@@ -23,4 +23,4 @@
 #incluison
 abc123
 aa12345565
-_arr12[10]
+_arr[10]

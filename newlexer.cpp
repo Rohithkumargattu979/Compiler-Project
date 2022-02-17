@@ -844,6 +844,7 @@ token getNextLexeme(vector<char>& buffer){
                     }
                 }
                 if(flagnum == 0 || openbrack == false || closebrack == false){
+                    cout<<"Line No: "<<lineNo<<" Unrecognized Array Syntax "<<str;
                     // handle error
                 }
                 else{
