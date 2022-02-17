@@ -8,6 +8,14 @@ typedef struct{
     string tokenString;
     int line;
 } token;
+typedef struct{
+    string identifier;
+    string scope;
+    string type;
+    int lineNo;
+    token token;
+    int len;
+}Array;
 // token that should be generated
 typedef struct{
     string keyWord;
@@ -28,14 +36,18 @@ typedef struct{
     string lineNo;
     token token;
     vector<variable> funct_variable_list;
+    vector<Array> funct_array_list;
     map<string,variable> funct_variable_map;
+    map<string,Array> funct_array_map;
 } funct; // assumption : atmost 1000 variables will only be present in any function
 
 typedef struct{
     vector<variable> variable_list;
     vector<funct> funct_list;
     map<string,funct> funct_map;
+    vector<Array> array_list;
 } symbolTable;
+
 
 symbolTable st;
 
@@ -224,6 +236,43 @@ token addVariable(string newVariable){
     return var.token;
 
 }
+
+token createArrayToken(string newArray){
+    token ans;
+    ans.tokenId = st.funct_map[getCurFun()].specialId;
+    st.funct_map[getCurFun()].specialId++;
+    ans.tokenString = "TK_ARRAY";
+    ans.value = newArray;
+    return ans;
+}
+Array createNewArray(string newArray){
+    string curfun = getCurFun();
+    funct fun = st.funct_map[curfun];
+    map<string,Array> mp = fun.funct_array_map;
+    Array ans;
+    if(mp.find(newArray) == mp.end()){
+        ans.identifier = newArray;
+        ans.scope = getCurFun();
+        ans.lineNo = lineNo;
+        // ans.len = l;
+        ans.token = createFuncToken(newArray);
+        fun.funct_array_map[newArray] = ans;
+        fun.funct_array_list.push_back(ans);
+    }
+    else{
+        ans = mp[newArray];
+    }
+    return ans;
+    
+    
+}
+// token addArray(string newArray){
+//     string curfun = getCurFun();
+//     funct fun = st.funct_map[curfun];
+//     Array arr = createNewArray(newArray);
+//     return arr.token;
+
+// }
 // ------------------------------------------------------------------------- //
 // we should add extra params 
 token getNextLexeme(vector<char>& buffer){ 
@@ -742,6 +791,75 @@ token getNextLexeme(vector<char>& buffer){
             token.tokenString = "TK_FUNCTEND";
             updateAtEnd();
             return token;
+        }
+        else if(buffer[offset] == '_'){
+            string str = "";
+            string num = "";
+            str += buffer[offset];
+            offset++;
+            int flagalpha = 0;
+            int flagnum = 0;
+            bool openbrack = false;
+            bool closebrack = false;
+            int MAX_VARIABLE_LEN = 15;
+            int len = 1;
+            if(flagalpha == 0){
+                while(buffer[offset] >='a' && buffer[offset] <='z'){ // min two alphas must be there to name a var
+                    flagalpha = 1;
+                    str += buffer[offset];
+                    offset++;
+                    len++;
+                    if(len > MAX_VARIABLE_LEN){
+                        // handle error
+                    }
+                }
+                if(flagalpha == 0){
+                    // handle error
+                }
+            }
+            if(flagalpha == 1 && flagnum == 0){
+                
+                while(buffer[offset] >='0' && buffer[offset] <='9'){
+                    flagnum = 1;
+                    str += buffer[offset];
+                    offset++;
+                    len++;  
+                    if(len > MAX_VARIABLE_LEN){
+                        // handle error
+                    }
+                }
+                if(buffer[offset] == '['){
+                    openbrack = true;
+                    str += buffer[offset];
+                    offset++;
+                    while(buffer[offset] >= '0' && buffer[offset] <= '9'){
+                        num += buffer[offset];
+                        str += buffer[offset];
+                        offset++;
+                    }
+                    if(buffer[offset] == ']'){
+                        closebrack = true;
+                        str += buffer[offset];
+                        offset++;
+                    }
+                }
+                if(flagnum == 0 || openbrack == false || closebrack == false){
+                    cout<<"Line No: "<<lineNo<<" Unrecognized Array Syntax "<<str;
+                    // handle error
+                }
+                else{
+                    token = createArrayToken(str);
+                    return token;
+                    // token.tokenId = 77;
+                    // token.tokenString = "TK_ARRAY";
+                    // token.value = str;
+                    // return token;
+                }
+            }
+            else{
+                // error
+            }
+
         }
         else{
         cout<<"error check syntax"<<endl;
