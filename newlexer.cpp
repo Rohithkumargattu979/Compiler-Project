@@ -243,6 +243,7 @@ token createArrayToken(string newArray){
     st.funct_map[getCurFun()].specialId++;
     ans.tokenString = "TK_ARRAY";
     ans.value = newArray;
+    
     return ans;
 }
 Array createNewArray(string newArray){
@@ -390,6 +391,11 @@ token getNextLexeme(vector<char>& buffer){
                 }
                 else{
                     ///// handle error
+                    cout<<"Error! Line No:"<<lineNo<<" Integer value overflow"<<endl;
+                    token.tokenId = 999;
+                    token.tokenString = "TK_ERROR";
+                    token.value = "Syntax Error";
+                    return token;
                 }
                 
             }
@@ -402,6 +408,11 @@ token getNextLexeme(vector<char>& buffer){
                 }
                 else{
                     // handle error
+                    cout<<"Error! Line No:"<<lineNo<<" Floating point overflow"<<endl;
+                    token.tokenId = 999;
+                    token.tokenString = "TK_ERROR";
+                    token.value = "Syntax Error";
+                    return token;
                 }
             }
             token.value =str1+fll; 
@@ -453,7 +464,11 @@ token getNextLexeme(vector<char>& buffer){
                     return token;
                 }
                 else{
-                    ///// handle error
+                    cout<<"Error! Line No:"<<lineNo<<" Integer value overflow"<<endl;
+                    token.tokenId = 999;
+                    token.tokenString = "TK_ERROR";
+                    token.value = "Syntax Error";
+                    return token;
                 }
                 
             }
@@ -465,7 +480,11 @@ token getNextLexeme(vector<char>& buffer){
                     return token;
                 }
                 else{
-                    // handle error
+                    cout<<"Error! Line No:"<<lineNo<<" Floating point overflow"<<endl;
+                    token.tokenId = 999;
+                    token.tokenString = "TK_ERROR";
+                    token.value = "Syntax Error";
+                    return token;
                 }
             }
             token.value =str1+fll; 
@@ -566,7 +585,11 @@ token getNextLexeme(vector<char>& buffer){
             }
             else{
                 // error 
-                cout<<"line:"<<lineNo<<":no such symbol probably try changing to : or =="<<endl;
+                cout<<"line:"<<lineNo<<":no such symbol exists, try changing to : or =="<<endl;
+                token.tokenId = 999;
+                token.tokenString = "TK_ERROR";
+                token.value = "Syntax Error";
+                return token;
             }
         }
         else if(buffer[offset] == ':'){
@@ -664,6 +687,11 @@ token getNextLexeme(vector<char>& buffer){
                 }
                 else{
                     ///// handle error
+                    cout<<"Error! Line No:"<<lineNo<<" Integer value overflow"<<endl;
+                    token.tokenId = 999;
+                    token.tokenString = "TK_ERROR";
+                    token.value = "Syntax Error";
+                    return token;
                 }
                 
             }
@@ -676,6 +704,11 @@ token getNextLexeme(vector<char>& buffer){
                 }
                 else{
                     // handle error
+                    cout<<"Error! Line No:"<<lineNo<<" Floating point overflow"<<endl;
+                    token.tokenId = 999;
+                    token.tokenString = "TK_ERROR";
+                    token.value = "Syntax Error";
+                    return token;
                 }
             }
             token.value =str1+fll; 
@@ -721,7 +754,11 @@ token getNextLexeme(vector<char>& buffer){
             // handle error
             cout<<"no such keyword:"<<str<<"please check syntax"<<endl;
             //******we need to change this token to error token
+            token.tokenId = 999;
+            token.tokenString = "TK_ERROR";
+            token.value = "Syntax Error";
             return token;
+            //return token;
         }
         else if(buffer[offset] >= 'a' && buffer[offset] <='z'){
             string str;
@@ -730,42 +767,63 @@ token getNextLexeme(vector<char>& buffer){
             int flagnum = 0;
             offset++;
             int MAX_VARIABLE_LEN = 15;
+            int lenalpha = 1;
             int len = 1;
+            int lennum = 0;
             if(flagalpha == 0){
                 while(buffer[offset] >='a' && buffer[offset] <='z'){ // min two alphas must be there to name a var
                     flagalpha = 1;
+                    lenalpha++;
                     str += buffer[offset];
                     offset++;
                     len++;
-                    if(len > MAX_VARIABLE_LEN){
-                        // handle error
-                    }
                 }
                 if(flagalpha == 0){
                     // handle error
+                    cout<<"Error! Line No:"<<lineNo<<" Variable should have atleast one alphabet in decleration"<<endl;
+                    token.tokenId = 999;
+                    token.tokenString = "TK_ERROR";
+                    token.value = "Syntax Error";
+                    return token;
                 }
             }
             if(flagalpha == 1 && flagnum == 0){
                 
                 while(buffer[offset] >='0' && buffer[offset] <='9'){
+                    lennum++;
                     flagnum = 1;
                     str += buffer[offset];
                     offset++;
                     len++;  
                     if(len > MAX_VARIABLE_LEN){
                         // handle error
+                        // cout<<"Error! Line No:"<<lineNo<<" Variable Length is too long to declare"<<endl;
+                        // token.tokenId = 999;
+                        // token.tokenString = "TK_ERROR";
+                        // token.value = "Syntax Error";
+                        // return token;
                     }
                 }
                 if(flagnum == 0){
                     // handle error
+                    cout<<"Error! Line No:"<<lineNo<<" Variable should contain atleast one numerical to declare"<<endl;
+                    token.tokenId = 999;
+                    token.tokenString = "TK_ERROR";
+                    token.value = "Syntax Error";
+                    return token;
                 }
+                else if(lenalpha > MAX_VARIABLE_LEN || lennum > MAX_VARIABLE_LEN || lenalpha + lennum > MAX_VARIABLE_LEN){
+                        // handle error
+                        cout<<"Error! Line No:"<<lineNo<<" Variable Length is too long to declare"<<endl;
+                        token.tokenId = 999;
+                        token.tokenString = "TK_ERROR";
+                        token.value = "Syntax Error";
+                        return token;
+                    }
                 else{
                     token = createVariableToken(str);
                     return token;
                 }
-            }
-            else{
-                // error
             }
 
         }
@@ -792,6 +850,33 @@ token getNextLexeme(vector<char>& buffer){
             updateAtEnd();
             return token;
         }
+        else if(buffer[offset] == '?'){
+            offset++;
+            string str = "?";
+            while(buffer[offset] >= 'a' && buffer[offset] <='z'){
+                str += buffer[offset];
+                offset++;
+            }
+            if(str == "?read"){
+                token.tokenId = 81;
+                token.value = str;
+                token.tokenString = "TK_READ";
+                return token;
+            }
+            else if(str == "?print"){
+                token.tokenId = 82;
+                token.value = str;
+                token.tokenString = "TK_PRINT";
+                return token;
+            }
+            else{
+                cout<<"Line No: "<<lineNo<<" Syntax Error"<<endl;
+                token.tokenId = 999;
+                token.tokenString = "TK_ERROR";
+                token.value = "Syntax Error";
+                return token;
+            }
+        }
         else if(buffer[offset] == '_'){
             string str = "";
             string num = "";
@@ -811,10 +896,20 @@ token getNextLexeme(vector<char>& buffer){
                     len++;
                     if(len > MAX_VARIABLE_LEN){
                         // handle error
+                        // cout<<"Error! Line No:"<<lineNo<<" Variable Length is too long to declare"<<endl;
+                        // token.tokenId = 999;
+                        // token.tokenString = "TK_ERROR";
+                        // token.value = "Syntax Error";
+                        // return token;
                     }
                 }
                 if(flagalpha == 0){
                     // handle error
+                    cout<<"Error! Line No:"<<lineNo<<" Variable should have atleast one alphabet in decleration"<<endl;
+                    token.tokenId = 999;
+                    token.tokenString = "TK_ERROR";
+                    token.value = "Syntax Error";
+                    return token;
                 }
             }
             if(flagalpha == 1 && flagnum == 0){
@@ -825,7 +920,11 @@ token getNextLexeme(vector<char>& buffer){
                     offset++;
                     len++;  
                     if(len > MAX_VARIABLE_LEN){
-                        // handle error
+                        // cout<<"Error! Line No: "<<lineNo<<" Variable Length is too long to declare"<<endl;
+                        // token.tokenId = 999;
+                        // token.tokenString = "TK_ERROR";
+                        // token.value = "Syntax Error";
+                        // return token;
                     }
                 }
                 if(buffer[offset] == '['){
@@ -844,9 +943,21 @@ token getNextLexeme(vector<char>& buffer){
                     }
                 }
                 if(flagnum == 0 || openbrack == false || closebrack == false){
-                    cout<<"Line No: "<<lineNo<<" Unrecognized Array Syntax "<<str;
+                    cout<<"Error! Line No: "<<lineNo<<" Unrecognized Array Syntax "<<str<<endl;
                     // handle error
+                    token.tokenId = 999;
+                    token.tokenString = "TK_ERROR";
+                    token.value = "Syntax Error";
+                    return token;
                 }
+                else if(len > MAX_VARIABLE_LEN){
+                        // handle error
+                        cout<<"Error! Line No:"<<lineNo<<" Variable Length is too long to declare"<<endl;
+                        token.tokenId = 999;
+                        token.tokenString = "TK_ERROR";
+                        token.value = "Syntax Error";
+                        return token;
+                    }
                 else{
                     token = createArrayToken(str);
                     return token;
@@ -856,13 +967,10 @@ token getNextLexeme(vector<char>& buffer){
                     // return token;
                 }
             }
-            else{
-                // error
-            }
 
         }
         else{
-        cout<<"error check syntax"<<endl;
+        cout<<"Error check syntax"<<endl;
         offset++;
         token.value="error_token";
         token.tokenString="TK_ERROR";

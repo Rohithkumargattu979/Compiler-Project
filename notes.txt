@@ -5,3 +5,5 @@ total length of variable name is not more than 15.
 3. Data Types = Float, Int, String
 4. A function can contain atmost 1000 variables, hence the Variable IDs and function IDs.
 5. array syntax : _arr12[10]
+6. scanf analogue == ?read
+7. printf analogue == ?print
