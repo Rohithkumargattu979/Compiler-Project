@@ -27,4 +27,5 @@ aa12345565
 _arr1[10]
 ?read
 ?print
+arr1[10]
 

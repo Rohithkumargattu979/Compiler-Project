@@ -4,6 +4,7 @@ total length of variable name is not more than 15.
 2. Our function starts with '@' and ends with '~'.
 3. Data Types = Float, Int, String
 4. A function can contain atmost 1000 variables, hence the Variable IDs and function IDs.
-5. array syntax : _arr12[10]
-6. scanf analogue == ?read
-7. printf analogue == ?print
+5. array syntax1 : _arr12[10]
+6. array syntax2 : arr12[10]
+7. scanf analogue == ?read
+8. printf analogue == ?print

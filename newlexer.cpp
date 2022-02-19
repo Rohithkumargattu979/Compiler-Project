@@ -1004,7 +1004,7 @@ void printTokenList(vector<char>& bytes){
     while(halwa != morenice){
         
         if(ans.tokenId!=22){
-        cout<<ans.tokenId<<" "<<ans.tokenString<<" "<<ans.value<<" "<<lineNo;
+        cout<<"Token "<<ans.tokenId<<", "<<ans.tokenString<<", string "<<ans.value<<", line number "<<lineNo;
         cout<<endl;
         }
         ans = getNextLexeme(bytes);
