@@ -243,6 +243,7 @@ token createArrayToken(string newArray){
     st.funct_map[getCurFun()].specialId++;
     ans.tokenString = "TK_ARRAY";
     ans.value = newArray;
+    
     return ans;
 }
 Array createNewArray(string newArray){
@@ -305,7 +306,7 @@ token getNextLexeme(vector<char>& buffer){
         }
         if(buffer[offset]==';'){
             offset++;
-            state=1;
+            state=2;
             token.value=";";
             token.tokenString="TK_SEMICOLON";
             token.tokenId=401;
@@ -314,7 +315,7 @@ token getNextLexeme(vector<char>& buffer){
         if(buffer[offset] == '&'){
             offset++;
             if(buffer[offset] == '&'){
-                state = 102;
+                state = 4;
                 token.value = "&&";
                 token.tokenId = 51; 
                 token.tokenString = "TK_LOGAND"; 
@@ -322,7 +323,7 @@ token getNextLexeme(vector<char>& buffer){
                 return token;
             }
             else{
-                state = 2;
+                state = 3;
                 token.value = "&";
                 token.tokenId = 50; 
                 token.tokenString = "TK_AND"; 
@@ -333,7 +334,7 @@ token getNextLexeme(vector<char>& buffer){
         else if(buffer[offset] == '|'){
             offset++;
             if(buffer[offset] == '|'){
-                state = 103;
+                state = 6;
                 token.value = "||";
                 token.tokenId = 53;
                 token.tokenString = "TK_LOGOR";
@@ -341,7 +342,7 @@ token getNextLexeme(vector<char>& buffer){
                 return token;
             }
             else{
-                state = 3;
+                state = 5;
                 token.value = "|";
                 token.tokenId = 52;
                 token.tokenString = "TK_OR";
@@ -350,17 +351,17 @@ token getNextLexeme(vector<char>& buffer){
         }
         else if(buffer[offset] == '+'){
             offset++;
-            state = 104;
+            state = 7;
             if(buffer[offset] >= '0' && buffer[offset] <= '9'){
             string str1;
             char str2 = buffer[offset];
             str1 = str1 + str2;
             offset++;
-            state = 123;
+            state = 8;
             while(buffer[offset] >= '0' && buffer[offset] <='9'){
                 str2 = buffer[offset];
                 str1 += str2;
-                state = 123;
+                state = 8;
                 offset++;
             }
             int flag = 0;
@@ -368,7 +369,7 @@ token getNextLexeme(vector<char>& buffer){
             if(buffer[offset] == '.'){
                
                 flag = 1;
-                state = 124;
+                state = 9;
                 char str3 = buffer[offset];
                 offset++;
                 fll += str3;
@@ -390,6 +391,11 @@ token getNextLexeme(vector<char>& buffer){
                 }
                 else{
                     ///// handle error
+                    cout<<"Error! Line No:"<<lineNo<<" Integer value overflow"<<endl;
+                    token.tokenId = 999;
+                    token.tokenString = "TK_ERROR";
+                    token.value = "Syntax Error";
+                    return token;
                 }
                 
             }
@@ -402,6 +408,11 @@ token getNextLexeme(vector<char>& buffer){
                 }
                 else{
                     // handle error
+                    cout<<"Error! Line No:"<<lineNo<<" Floating point overflow"<<endl;
+                    token.tokenId = 999;
+                    token.tokenString = "TK_ERROR";
+                    token.value = "Syntax Error";
+                    return token;
                 }
             }
             token.value =str1+fll; 
@@ -414,17 +425,17 @@ token getNextLexeme(vector<char>& buffer){
         }
         else if(buffer[offset] == '-'){
             offset++;
-            state = 105;
+            state = 10;
             if(buffer[offset] >= '0' && buffer[offset] <= '9'){
             string str1;
             char str2 = buffer[offset];
             str1 = str1 + str2;
             offset++;
-            state = 123;
+            state = 8;
             while(buffer[offset] >= '0' && buffer[offset] <='9'){
                 str2 = buffer[offset];
                 str1 += str2;
-                state = 123;
+                state = 8;
                 offset++;
             }
             int flag = 0;
@@ -432,14 +443,14 @@ token getNextLexeme(vector<char>& buffer){
             if(buffer[offset] == '.'){
                
                 flag = 1;
-                state = 124;
+                state = 9;
                 char str3 = buffer[offset];
                 offset++;
                 fll += str3;
                 while(buffer[offset] >= '0' && buffer[offset] <='9'){
                     str3 = buffer[offset];
                     fll += str3;
-                    state = 124;
+                    state = 9;
                     offset++;
                 }
             }
@@ -453,7 +464,11 @@ token getNextLexeme(vector<char>& buffer){
                     return token;
                 }
                 else{
-                    ///// handle error
+                    cout<<"Error! Line No:"<<lineNo<<" Integer value overflow"<<endl;
+                    token.tokenId = 999;
+                    token.tokenString = "TK_ERROR";
+                    token.value = "Syntax Error";
+                    return token;
                 }
                 
             }
@@ -465,7 +480,11 @@ token getNextLexeme(vector<char>& buffer){
                     return token;
                 }
                 else{
-                    // handle error
+                    cout<<"Error! Line No:"<<lineNo<<" Floating point overflow"<<endl;
+                    token.tokenId = 999;
+                    token.tokenString = "TK_ERROR";
+                    token.value = "Syntax Error";
+                    return token;
                 }
             }
             token.value =str1+fll; 
@@ -478,7 +497,7 @@ token getNextLexeme(vector<char>& buffer){
         }
         else if(buffer[offset] == '*'){
             offset++;
-            state = 106;
+            state = 11;
             token.value = "*";
             token.tokenId = 56;
             token.tokenString = "TK_MUL";
@@ -486,7 +505,7 @@ token getNextLexeme(vector<char>& buffer){
         }
         else if(buffer[offset] == '/'){
             offset++;
-            state = 107;
+            state = 12;
             token.value = "/";
             token.tokenId = 57;
             token.tokenString = "TK_DIV";
@@ -494,7 +513,7 @@ token getNextLexeme(vector<char>& buffer){
         }
         else if(buffer[offset] == '%'){
             offset++;
-            state = 108;
+            state = 13;
             token.value = "%";
             token.tokenId = 58;
             token.tokenString = "TK_MOD";
@@ -503,7 +522,7 @@ token getNextLexeme(vector<char>& buffer){
         else if(buffer[offset] == '!'){
             offset++;
             if(buffer[offset] == '='){
-                state = 110;
+                state = 15;
                 token.value = "!=";
                 token.tokenId = 60; 
                 token.tokenString = "TK_NOTEQ"; 
@@ -511,7 +530,7 @@ token getNextLexeme(vector<char>& buffer){
                 return token;
             }
             else{
-                state = 109;
+                state = 14;
                 token.value = "!";
                 token.tokenId = 59; 
                 token.tokenString = "TK_NOT"; 
@@ -521,7 +540,7 @@ token getNextLexeme(vector<char>& buffer){
         else if(buffer[offset] == '>'){
             offset++;
             if(buffer[offset] == '='){
-                state = 112;
+                state = 17;
                 token.value = ">=";
                 token.tokenId = 62; 
                 token.tokenString = "TK_GEQ"; 
@@ -529,7 +548,7 @@ token getNextLexeme(vector<char>& buffer){
                 return token;
             }
             else{
-                state = 111;
+                state = 16;
                 token.value = ">";
                 token.tokenId = 61; 
                 token.tokenString = "TK_GET"; 
@@ -539,7 +558,7 @@ token getNextLexeme(vector<char>& buffer){
         else if(buffer[offset] == '<'){
             offset++;
             if(buffer[offset] == '='){ 
-                state = 114;
+                state = 19;
                 token.value = "<=";
                 token.tokenId = 64; 
                 token.tokenString = "TK_LEQ"; 
@@ -547,7 +566,7 @@ token getNextLexeme(vector<char>& buffer){
                 return token;
             }
             else{
-                state = 113;
+                state = 18;
                 token.value = "<";
                 token.tokenId = 63; 
                 token.tokenString = "TK_LET"; 
@@ -557,7 +576,7 @@ token getNextLexeme(vector<char>& buffer){
         else if(buffer[offset] == '='){
             offset++;
             if(buffer[offset] == '='){
-                state = 115;
+                state = 20;
                 token.value = "==";
                 token.tokenId = 65; 
                 token.tokenString = "TK_EQUALS"; 
@@ -566,12 +585,16 @@ token getNextLexeme(vector<char>& buffer){
             }
             else{
                 // error 
-                cout<<"line:"<<lineNo<<":no such symbol probably try changing to : or =="<<endl;
+                cout<<"line:"<<lineNo<<":no such symbol exists, try changing to : or =="<<endl;
+                token.tokenId = 999;
+                token.tokenString = "TK_ERROR";
+                token.value = "Syntax Error";
+                return token;
             }
         }
         else if(buffer[offset] == ':'){
             offset++;
-            state = 116;
+            state = 21;
             token.value = ":";
             token.tokenId = 66;
             token.tokenString = "TK_ASSIGN";
@@ -579,7 +602,7 @@ token getNextLexeme(vector<char>& buffer){
         }
         else if(buffer[offset] == '{'){
             offset++;
-            state = 117;
+            state = 22;
             token.value = "{";
             token.tokenId = 67;
             token.tokenString = "TK_FLOPEN";
@@ -587,7 +610,7 @@ token getNextLexeme(vector<char>& buffer){
         }
         else if(buffer[offset] == '}'){
             offset++;
-            state = 118;
+            state = 23;
             token.value = "}";
             token.tokenId = 68;
             token.tokenString = "TK_FLCLOSE";
@@ -595,7 +618,7 @@ token getNextLexeme(vector<char>& buffer){
         }
         else if(buffer[offset] == '('){
             offset++;
-            state = 119;
+            state = 24;
             token.value = "(";
             token.tokenId = 69;
             token.tokenString = "TK_SMOPEN";
@@ -603,7 +626,7 @@ token getNextLexeme(vector<char>& buffer){
         }
         else if(buffer[offset] == ')'){
             offset++;
-            state = 120;
+            state = 25;
             token.value = ")";
             token.tokenId = 70;
             token.tokenString = "TK_SMCLOSE";
@@ -611,7 +634,7 @@ token getNextLexeme(vector<char>& buffer){
         }
         else if(buffer[offset] == '['){
             offset++;
-            state = 121;
+            state = 26;
             token.value = "[";
             token.tokenId = 71;
             token.tokenString = "TK_SQOPEN";
@@ -619,7 +642,7 @@ token getNextLexeme(vector<char>& buffer){
         }
         else if(buffer[offset] == ']'){
             offset++;
-            state = 122;
+            state = 27;
             token.value = "]";
             token.tokenId = 72;
             token.tokenString = "TK_SQCLOSE";
@@ -630,11 +653,11 @@ token getNextLexeme(vector<char>& buffer){
             char str2 = buffer[offset];
             str1 = str1 + str2;
             offset++;
-            state = 123;
+            state = 8;
             while(buffer[offset] >= '0' && buffer[offset] <='9'){
                 str2 = buffer[offset];
                 str1 += str2;
-                state = 123;
+                state = 8;
                 offset++;
             }
             int flag = 0;
@@ -642,14 +665,14 @@ token getNextLexeme(vector<char>& buffer){
             if(buffer[offset] == '.'){
                
                 flag = 1;
-                state = 124;
+                state = 9;
                 char str3 = buffer[offset];
                 offset++;
                 fll += str3;
                 while(buffer[offset] >= '0' && buffer[offset] <='9'){
                     str3 = buffer[offset];
                     fll += str3;
-                    state = 124;
+                    state = 9;
                     offset++;
                 }
             }
@@ -664,6 +687,11 @@ token getNextLexeme(vector<char>& buffer){
                 }
                 else{
                     ///// handle error
+                    cout<<"Error! Line No:"<<lineNo<<" Integer value overflow"<<endl;
+                    token.tokenId = 999;
+                    token.tokenString = "TK_ERROR";
+                    token.value = "Syntax Error";
+                    return token;
                 }
                 
             }
@@ -676,12 +704,18 @@ token getNextLexeme(vector<char>& buffer){
                 }
                 else{
                     // handle error
+                    cout<<"Error! Line No:"<<lineNo<<" Floating point overflow"<<endl;
+                    token.tokenId = 999;
+                    token.tokenString = "TK_ERROR";
+                    token.value = "Syntax Error";
+                    return token;
                 }
             }
             token.value =str1+fll; 
             return token;
         }
         else if(buffer[offset]=='"'){
+            state = 28;
             string str1;
             char str2 = buffer[offset];
             str1 += str2;
@@ -691,6 +725,7 @@ token getNextLexeme(vector<char>& buffer){
                 str1 += str2;
                 offset++;
             }
+            state = 29 ;
             str1+=buffer[offset];
             offset++;
             //found a bug -now debugged
@@ -703,6 +738,7 @@ token getNextLexeme(vector<char>& buffer){
             return token;
         }
         else if(buffer[offset] >= 'A' && buffer[offset] <= 'Z'){
+            state = 30;
             string str;
             str += buffer[offset];
             offset++;
@@ -721,55 +757,83 @@ token getNextLexeme(vector<char>& buffer){
             // handle error
             cout<<"no such keyword:"<<str<<"please check syntax"<<endl;
             //******we need to change this token to error token
+            token.tokenId = 999;
+            token.tokenString = "TK_ERROR";
+            token.value = "Syntax Error";
             return token;
+            //return token;
         }
         else if(buffer[offset] >= 'a' && buffer[offset] <='z'){
+            state = 31;
             string str;
             str +=  buffer[offset];
             int flagalpha = 0;
             int flagnum = 0;
             offset++;
             int MAX_VARIABLE_LEN = 15;
+            int lenalpha = 1;
             int len = 1;
+            int lennum = 0;
             if(flagalpha == 0){
                 while(buffer[offset] >='a' && buffer[offset] <='z'){ // min two alphas must be there to name a var
                     flagalpha = 1;
+                    lenalpha++;
                     str += buffer[offset];
                     offset++;
                     len++;
-                    if(len > MAX_VARIABLE_LEN){
-                        // handle error
-                    }
                 }
                 if(flagalpha == 0){
                     // handle error
+                    cout<<"Error! Line No:"<<lineNo<<" Variable should have atleast one alphabet in decleration"<<endl;
+                    token.tokenId = 999;
+                    token.tokenString = "TK_ERROR";
+                    token.value = "Syntax Error";
+                    return token;
                 }
             }
             if(flagalpha == 1 && flagnum == 0){
                 
                 while(buffer[offset] >='0' && buffer[offset] <='9'){
+                    state = 32;
+                    lennum++;
                     flagnum = 1;
                     str += buffer[offset];
                     offset++;
                     len++;  
                     if(len > MAX_VARIABLE_LEN){
                         // handle error
+                        // cout<<"Error! Line No:"<<lineNo<<" Variable Length is too long to declare"<<endl;
+                        // token.tokenId = 999;
+                        // token.tokenString = "TK_ERROR";
+                        // token.value = "Syntax Error";
+                        // return token;
                     }
                 }
                 if(flagnum == 0){
                     // handle error
+                    cout<<"Error! Line No:"<<lineNo<<" Variable should contain atleast one numerical to declare"<<endl;
+                    token.tokenId = 999;
+                    token.tokenString = "TK_ERROR";
+                    token.value = "Syntax Error";
+                    return token;
                 }
+                else if(lenalpha > MAX_VARIABLE_LEN || lennum > MAX_VARIABLE_LEN || lenalpha + lennum > MAX_VARIABLE_LEN){
+                        // handle error
+                        cout<<"Error! Line No:"<<lineNo<<" Variable Length is too long to declare"<<endl;
+                        token.tokenId = 999;
+                        token.tokenString = "TK_ERROR";
+                        token.value = "Syntax Error";
+                        return token;
+                    }
                 else{
                     token = createVariableToken(str);
                     return token;
                 }
             }
-            else{
-                // error
-            }
 
         }
         else if(buffer[offset] == '@'){
+            state = 33;
             offset++;
             string str = "";//not included $
             // cout<<str<<"@@@@"<<endl;
@@ -786,13 +850,45 @@ token getNextLexeme(vector<char>& buffer){
         }
         else if(buffer[offset] == '~'){
             offset++;
+            state = 34;
             token.tokenId = 76;
             token.value = "~";
             token.tokenString = "TK_FUNCTEND";
             updateAtEnd();
             return token;
         }
+        else if(buffer[offset] == '?'){
+            state = 39;
+            offset++;
+            string str = "?";
+            while(buffer[offset] >= 'a' && buffer[offset] <='z'){
+                str += buffer[offset];
+                offset++;
+            }
+            if(str == "?read"){
+                state = 40;
+                token.tokenId = 81;
+                token.value = str;
+                token.tokenString = "TK_READ";
+                return token;
+            }
+            else if(str == "?print"){
+                state = 41;
+                token.tokenId = 82;
+                token.value = str;
+                token.tokenString = "TK_PRINT";
+                return token;
+            }
+            else{
+                cout<<"Line No: "<<lineNo<<" Syntax Error"<<endl;
+                token.tokenId = 999;
+                token.tokenString = "TK_ERROR";
+                token.value = "Syntax Error";
+                return token;
+            }
+        }
         else if(buffer[offset] == '_'){
+            state = 35;
             string str = "";
             string num = "";
             str += buffer[offset];
@@ -811,24 +907,40 @@ token getNextLexeme(vector<char>& buffer){
                     len++;
                     if(len > MAX_VARIABLE_LEN){
                         // handle error
+                        // cout<<"Error! Line No:"<<lineNo<<" Variable Length is too long to declare"<<endl;
+                        // token.tokenId = 999;
+                        // token.tokenString = "TK_ERROR";
+                        // token.value = "Syntax Error";
+                        // return token;
                     }
                 }
                 if(flagalpha == 0){
                     // handle error
+                    cout<<"Error! Line No:"<<lineNo<<" Variable should have atleast one alphabet in decleration"<<endl;
+                    token.tokenId = 999;
+                    token.tokenString = "TK_ERROR";
+                    token.value = "Syntax Error";
+                    return token;
                 }
             }
             if(flagalpha == 1 && flagnum == 0){
                 
                 while(buffer[offset] >='0' && buffer[offset] <='9'){
+                    state = 36;
                     flagnum = 1;
                     str += buffer[offset];
                     offset++;
                     len++;  
                     if(len > MAX_VARIABLE_LEN){
-                        // handle error
+                        // cout<<"Error! Line No: "<<lineNo<<" Variable Length is too long to declare"<<endl;
+                        // token.tokenId = 999;
+                        // token.tokenString = "TK_ERROR";
+                        // token.value = "Syntax Error";
+                        // return token;
                     }
                 }
                 if(buffer[offset] == '['){
+                    state = 37;
                     openbrack = true;
                     str += buffer[offset];
                     offset++;
@@ -838,15 +950,28 @@ token getNextLexeme(vector<char>& buffer){
                         offset++;
                     }
                     if(buffer[offset] == ']'){
+                        state = 38;
                         closebrack = true;
                         str += buffer[offset];
                         offset++;
                     }
                 }
                 if(flagnum == 0 || openbrack == false || closebrack == false){
-                    cout<<"Line No: "<<lineNo<<" Unrecognized Array Syntax "<<str;
+                    cout<<"Error! Line No: "<<lineNo<<" Unrecognized Array Syntax "<<str<<endl;
                     // handle error
+                    token.tokenId = 999;
+                    token.tokenString = "TK_ERROR";
+                    token.value = "Syntax Error";
+                    return token;
                 }
+                else if(len > MAX_VARIABLE_LEN){
+                        // handle error
+                        cout<<"Error! Line No:"<<lineNo<<" Variable Length is too long to declare"<<endl;
+                        token.tokenId = 999;
+                        token.tokenString = "TK_ERROR";
+                        token.value = "Syntax Error";
+                        return token;
+                    }
                 else{
                     token = createArrayToken(str);
                     return token;
@@ -856,13 +981,10 @@ token getNextLexeme(vector<char>& buffer){
                     // return token;
                 }
             }
-            else{
-                // error
-            }
 
         }
         else{
-        cout<<"error check syntax"<<endl;
+        cout<<"Error check syntax"<<endl;
         offset++;
         token.value="error_token";
         token.tokenString="TK_ERROR";
@@ -882,7 +1004,7 @@ void printTokenList(vector<char>& bytes){
     while(halwa != morenice){
         
         if(ans.tokenId!=22){
-        cout<<ans.tokenId<<" "<<ans.tokenString<<" "<<ans.value<<" "<<lineNo;
+        cout<<"Token "<<ans.tokenId<<", "<<ans.tokenString<<", string "<<ans.value<<", line number "<<lineNo;
         cout<<endl;
         }
         ans = getNextLexeme(bytes);
@@ -916,6 +1038,7 @@ string removeAllComments(string fileName){
        }
        //handles multiline comments {$ content $}
        if(byte=='$'){
+           input_file.get(byte);
            while(byte!='$'){
              input_file.get(byte);
          }
