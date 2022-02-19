@@ -306,7 +306,7 @@ token getNextLexeme(vector<char>& buffer){
         }
         if(buffer[offset]==';'){
             offset++;
-            state=1;
+            state=2;
             token.value=";";
             token.tokenString="TK_SEMICOLON";
             token.tokenId=401;
@@ -315,7 +315,7 @@ token getNextLexeme(vector<char>& buffer){
         if(buffer[offset] == '&'){
             offset++;
             if(buffer[offset] == '&'){
-                state = 102;
+                state = 4;
                 token.value = "&&";
                 token.tokenId = 51; 
                 token.tokenString = "TK_LOGAND"; 
@@ -323,7 +323,7 @@ token getNextLexeme(vector<char>& buffer){
                 return token;
             }
             else{
-                state = 2;
+                state = 3;
                 token.value = "&";
                 token.tokenId = 50; 
                 token.tokenString = "TK_AND"; 
@@ -334,7 +334,7 @@ token getNextLexeme(vector<char>& buffer){
         else if(buffer[offset] == '|'){
             offset++;
             if(buffer[offset] == '|'){
-                state = 103;
+                state = 6;
                 token.value = "||";
                 token.tokenId = 53;
                 token.tokenString = "TK_LOGOR";
@@ -342,7 +342,7 @@ token getNextLexeme(vector<char>& buffer){
                 return token;
             }
             else{
-                state = 3;
+                state = 5;
                 token.value = "|";
                 token.tokenId = 52;
                 token.tokenString = "TK_OR";
@@ -351,17 +351,17 @@ token getNextLexeme(vector<char>& buffer){
         }
         else if(buffer[offset] == '+'){
             offset++;
-            state = 104;
+            state = 7;
             if(buffer[offset] >= '0' && buffer[offset] <= '9'){
             string str1;
             char str2 = buffer[offset];
             str1 = str1 + str2;
             offset++;
-            state = 123;
+            state = 8;
             while(buffer[offset] >= '0' && buffer[offset] <='9'){
                 str2 = buffer[offset];
                 str1 += str2;
-                state = 123;
+                state = 8;
                 offset++;
             }
             int flag = 0;
@@ -369,7 +369,7 @@ token getNextLexeme(vector<char>& buffer){
             if(buffer[offset] == '.'){
                
                 flag = 1;
-                state = 124;
+                state = 9;
                 char str3 = buffer[offset];
                 offset++;
                 fll += str3;
@@ -425,17 +425,17 @@ token getNextLexeme(vector<char>& buffer){
         }
         else if(buffer[offset] == '-'){
             offset++;
-            state = 105;
+            state = 10;
             if(buffer[offset] >= '0' && buffer[offset] <= '9'){
             string str1;
             char str2 = buffer[offset];
             str1 = str1 + str2;
             offset++;
-            state = 123;
+            state = 8;
             while(buffer[offset] >= '0' && buffer[offset] <='9'){
                 str2 = buffer[offset];
                 str1 += str2;
-                state = 123;
+                state = 8;
                 offset++;
             }
             int flag = 0;
@@ -443,14 +443,14 @@ token getNextLexeme(vector<char>& buffer){
             if(buffer[offset] == '.'){
                
                 flag = 1;
-                state = 124;
+                state = 9;
                 char str3 = buffer[offset];
                 offset++;
                 fll += str3;
                 while(buffer[offset] >= '0' && buffer[offset] <='9'){
                     str3 = buffer[offset];
                     fll += str3;
-                    state = 124;
+                    state = 9;
                     offset++;
                 }
             }
@@ -497,7 +497,7 @@ token getNextLexeme(vector<char>& buffer){
         }
         else if(buffer[offset] == '*'){
             offset++;
-            state = 106;
+            state = 11;
             token.value = "*";
             token.tokenId = 56;
             token.tokenString = "TK_MUL";
@@ -505,7 +505,7 @@ token getNextLexeme(vector<char>& buffer){
         }
         else if(buffer[offset] == '/'){
             offset++;
-            state = 107;
+            state = 12;
             token.value = "/";
             token.tokenId = 57;
             token.tokenString = "TK_DIV";
@@ -513,7 +513,7 @@ token getNextLexeme(vector<char>& buffer){
         }
         else if(buffer[offset] == '%'){
             offset++;
-            state = 108;
+            state = 13;
             token.value = "%";
             token.tokenId = 58;
             token.tokenString = "TK_MOD";
@@ -522,7 +522,7 @@ token getNextLexeme(vector<char>& buffer){
         else if(buffer[offset] == '!'){
             offset++;
             if(buffer[offset] == '='){
-                state = 110;
+                state = 15;
                 token.value = "!=";
                 token.tokenId = 60; 
                 token.tokenString = "TK_NOTEQ"; 
@@ -530,7 +530,7 @@ token getNextLexeme(vector<char>& buffer){
                 return token;
             }
             else{
-                state = 109;
+                state = 14;
                 token.value = "!";
                 token.tokenId = 59; 
                 token.tokenString = "TK_NOT"; 
@@ -540,7 +540,7 @@ token getNextLexeme(vector<char>& buffer){
         else if(buffer[offset] == '>'){
             offset++;
             if(buffer[offset] == '='){
-                state = 112;
+                state = 17;
                 token.value = ">=";
                 token.tokenId = 62; 
                 token.tokenString = "TK_GEQ"; 
@@ -548,7 +548,7 @@ token getNextLexeme(vector<char>& buffer){
                 return token;
             }
             else{
-                state = 111;
+                state = 16;
                 token.value = ">";
                 token.tokenId = 61; 
                 token.tokenString = "TK_GET"; 
@@ -558,7 +558,7 @@ token getNextLexeme(vector<char>& buffer){
         else if(buffer[offset] == '<'){
             offset++;
             if(buffer[offset] == '='){ 
-                state = 114;
+                state = 19;
                 token.value = "<=";
                 token.tokenId = 64; 
                 token.tokenString = "TK_LEQ"; 
@@ -566,7 +566,7 @@ token getNextLexeme(vector<char>& buffer){
                 return token;
             }
             else{
-                state = 113;
+                state = 18;
                 token.value = "<";
                 token.tokenId = 63; 
                 token.tokenString = "TK_LET"; 
@@ -576,7 +576,7 @@ token getNextLexeme(vector<char>& buffer){
         else if(buffer[offset] == '='){
             offset++;
             if(buffer[offset] == '='){
-                state = 115;
+                state = 20;
                 token.value = "==";
                 token.tokenId = 65; 
                 token.tokenString = "TK_EQUALS"; 
@@ -594,7 +594,7 @@ token getNextLexeme(vector<char>& buffer){
         }
         else if(buffer[offset] == ':'){
             offset++;
-            state = 116;
+            state = 21;
             token.value = ":";
             token.tokenId = 66;
             token.tokenString = "TK_ASSIGN";
@@ -602,7 +602,7 @@ token getNextLexeme(vector<char>& buffer){
         }
         else if(buffer[offset] == '{'){
             offset++;
-            state = 117;
+            state = 22;
             token.value = "{";
             token.tokenId = 67;
             token.tokenString = "TK_FLOPEN";
@@ -610,7 +610,7 @@ token getNextLexeme(vector<char>& buffer){
         }
         else if(buffer[offset] == '}'){
             offset++;
-            state = 118;
+            state = 23;
             token.value = "}";
             token.tokenId = 68;
             token.tokenString = "TK_FLCLOSE";
@@ -618,7 +618,7 @@ token getNextLexeme(vector<char>& buffer){
         }
         else if(buffer[offset] == '('){
             offset++;
-            state = 119;
+            state = 24;
             token.value = "(";
             token.tokenId = 69;
             token.tokenString = "TK_SMOPEN";
@@ -626,7 +626,7 @@ token getNextLexeme(vector<char>& buffer){
         }
         else if(buffer[offset] == ')'){
             offset++;
-            state = 120;
+            state = 25;
             token.value = ")";
             token.tokenId = 70;
             token.tokenString = "TK_SMCLOSE";
@@ -634,7 +634,7 @@ token getNextLexeme(vector<char>& buffer){
         }
         else if(buffer[offset] == '['){
             offset++;
-            state = 121;
+            state = 26;
             token.value = "[";
             token.tokenId = 71;
             token.tokenString = "TK_SQOPEN";
@@ -642,7 +642,7 @@ token getNextLexeme(vector<char>& buffer){
         }
         else if(buffer[offset] == ']'){
             offset++;
-            state = 122;
+            state = 27;
             token.value = "]";
             token.tokenId = 72;
             token.tokenString = "TK_SQCLOSE";
@@ -653,11 +653,11 @@ token getNextLexeme(vector<char>& buffer){
             char str2 = buffer[offset];
             str1 = str1 + str2;
             offset++;
-            state = 123;
+            state = 8;
             while(buffer[offset] >= '0' && buffer[offset] <='9'){
                 str2 = buffer[offset];
                 str1 += str2;
-                state = 123;
+                state = 8;
                 offset++;
             }
             int flag = 0;
@@ -665,14 +665,14 @@ token getNextLexeme(vector<char>& buffer){
             if(buffer[offset] == '.'){
                
                 flag = 1;
-                state = 124;
+                state = 9;
                 char str3 = buffer[offset];
                 offset++;
                 fll += str3;
                 while(buffer[offset] >= '0' && buffer[offset] <='9'){
                     str3 = buffer[offset];
                     fll += str3;
-                    state = 124;
+                    state = 9;
                     offset++;
                 }
             }
@@ -715,6 +715,7 @@ token getNextLexeme(vector<char>& buffer){
             return token;
         }
         else if(buffer[offset]=='"'){
+            state = 28;
             string str1;
             char str2 = buffer[offset];
             str1 += str2;
@@ -724,6 +725,7 @@ token getNextLexeme(vector<char>& buffer){
                 str1 += str2;
                 offset++;
             }
+            state = 29 ;
             str1+=buffer[offset];
             offset++;
             //found a bug -now debugged
@@ -736,6 +738,7 @@ token getNextLexeme(vector<char>& buffer){
             return token;
         }
         else if(buffer[offset] >= 'A' && buffer[offset] <= 'Z'){
+            state = 30;
             string str;
             str += buffer[offset];
             offset++;
@@ -761,6 +764,7 @@ token getNextLexeme(vector<char>& buffer){
             //return token;
         }
         else if(buffer[offset] >= 'a' && buffer[offset] <='z'){
+            state = 31;
             string str;
             str +=  buffer[offset];
             int flagalpha = 0;
@@ -790,6 +794,7 @@ token getNextLexeme(vector<char>& buffer){
             if(flagalpha == 1 && flagnum == 0){
                 
                 while(buffer[offset] >='0' && buffer[offset] <='9'){
+                    state = 32;
                     lennum++;
                     flagnum = 1;
                     str += buffer[offset];
@@ -828,6 +833,7 @@ token getNextLexeme(vector<char>& buffer){
 
         }
         else if(buffer[offset] == '@'){
+            state = 33;
             offset++;
             string str = "";//not included $
             // cout<<str<<"@@@@"<<endl;
@@ -844,6 +850,7 @@ token getNextLexeme(vector<char>& buffer){
         }
         else if(buffer[offset] == '~'){
             offset++;
+            state = 34;
             token.tokenId = 76;
             token.value = "~";
             token.tokenString = "TK_FUNCTEND";
@@ -851,6 +858,7 @@ token getNextLexeme(vector<char>& buffer){
             return token;
         }
         else if(buffer[offset] == '?'){
+            state = 39;
             offset++;
             string str = "?";
             while(buffer[offset] >= 'a' && buffer[offset] <='z'){
@@ -858,12 +866,14 @@ token getNextLexeme(vector<char>& buffer){
                 offset++;
             }
             if(str == "?read"){
+                state = 40;
                 token.tokenId = 81;
                 token.value = str;
                 token.tokenString = "TK_READ";
                 return token;
             }
             else if(str == "?print"){
+                state = 41;
                 token.tokenId = 82;
                 token.value = str;
                 token.tokenString = "TK_PRINT";
@@ -878,6 +888,7 @@ token getNextLexeme(vector<char>& buffer){
             }
         }
         else if(buffer[offset] == '_'){
+            state = 35;
             string str = "";
             string num = "";
             str += buffer[offset];
@@ -915,6 +926,7 @@ token getNextLexeme(vector<char>& buffer){
             if(flagalpha == 1 && flagnum == 0){
                 
                 while(buffer[offset] >='0' && buffer[offset] <='9'){
+                    state = 36;
                     flagnum = 1;
                     str += buffer[offset];
                     offset++;
@@ -928,6 +940,7 @@ token getNextLexeme(vector<char>& buffer){
                     }
                 }
                 if(buffer[offset] == '['){
+                    state = 37;
                     openbrack = true;
                     str += buffer[offset];
                     offset++;
@@ -937,6 +950,7 @@ token getNextLexeme(vector<char>& buffer){
                         offset++;
                     }
                     if(buffer[offset] == ']'){
+                        state = 38;
                         closebrack = true;
                         str += buffer[offset];
                         offset++;
