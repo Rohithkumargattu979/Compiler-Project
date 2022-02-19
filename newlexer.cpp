@@ -1057,7 +1057,7 @@ int main(){
     cout<<t.tokenId<<endl;
     cout<<t.tokenString<<endl;
     cout<<t.value<<endl;
-    string fileName="test1.txt";//can take as a user input
+    string fileName="test2.txt";//can take as a user input
     string f2=removeAllComments(fileName);//this returns the filename of the new file with no comments
     vector<char> bytes=getInputStream(f2);
     printTokenList(bytes);

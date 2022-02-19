@@ -1,4 +1,5 @@
-
+# all letters should be lower case, only keywords contain uppercase letters.
+# code to check if given integer is even or not.
 Int @checkeven(Int val123){
     If(val123%2 == 0){
         Return 1;
