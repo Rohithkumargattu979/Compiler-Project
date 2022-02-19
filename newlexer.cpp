@@ -1038,6 +1038,7 @@ string removeAllComments(string fileName){
        }
        //handles multiline comments {$ content $}
        if(byte=='$'){
+           input_file.get(byte);
            while(byte!='$'){
              input_file.get(byte);
          }
