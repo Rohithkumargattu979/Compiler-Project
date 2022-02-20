@@ -1,76 +1,13 @@
 #include<bits/stdc++.h>
 #include<fstream>
 #include<iostream>
+#include "newlexer.h"
 using namespace std;
-typedef struct{
-    int tokenId;
-    string value;
-    string tokenString;
-    int line;
-} token;
-typedef struct{
-    string identifier;
-    string scope;
-    string type;
-    int lineNo;
-    token token;
-    int len;
-}Array;
-// token that should be generated
-typedef struct{
-    string keyWord;
-    int tokenId;
-} hashTable; // hashtable attributes
 
-typedef struct{
-    string identifier;
-    string scope;
-    string type;
-    int lineNo;
-    token token;
-} variable;
-
-typedef struct{
-    int specialId;
-    string name;
-    string lineNo;
-    token token;
-    vector<variable> funct_variable_list;
-    vector<Array> funct_array_list;
-    map<string,variable> funct_variable_map;
-    map<string,Array> funct_array_map;
-} funct; // assumption : atmost 1000 variables will only be present in any function
-
-typedef struct{
-    vector<variable> variable_list;
-    vector<funct> funct_list;
-    map<string,funct> funct_map;
-    vector<Array> array_list;
-} symbolTable;
-
-
+// ------------------------------------------------------------------------------------------------- //
 symbolTable st;
 
 stack<string> functStack;
-
-int state;
-int offset = 0;
-int lexicalError;
-int lineNo;
-int funcToken = 10000;
-int specialfunid = 10001;
-
-void createLexerHashTable();
-long long hashFunction(string string);
-int lookupFunction(string lexeme);
-
-void removeComments(FILE* testfile);
-
-int getLexErrors();
-void resetLexErrors();
-string PREV_FUN_NAME = "Global";
-string CUR_FUN_NAME;
-// ------------------------------------------------------------------------------------------------- //
 map<int,hashTable> ht;
 long long hashFunc(string str){
     long long p=31;
@@ -1052,12 +989,15 @@ string removeAllComments(string fileName){
 }
 int main(){
     lineNo=1;
+    string fileName="test2.txt";//can take as a user input
+    cout<<"enter file name:"<<endl;
+    cin>>fileName;
     createLexerHashTable();
     token t = addGlobalFun();
     cout<<t.tokenId<<endl;
     cout<<t.tokenString<<endl;
     cout<<t.value<<endl;
-    string fileName="test2.txt";//can take as a user input
+   
     string f2=removeAllComments(fileName);//this returns the filename of the new file with no comments
     vector<char> bytes=getInputStream(f2);
     printTokenList(bytes);
