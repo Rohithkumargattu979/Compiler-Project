@@ -29,3 +29,7 @@ _arr1[10]
 ?print
 arr1[10]
 
+Int xy12:10;
+
+xy12
+

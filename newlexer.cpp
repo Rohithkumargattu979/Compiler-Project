@@ -139,28 +139,38 @@ token checkFunc(string funName){
 }
 token createVariableToken(string newVariable){
     token ans;
+    // createNewVariable(newVariable);
     ans.tokenId = st.funct_map[getCurFun()].specialId;
     st.funct_map[getCurFun()].specialId++;
     ans.tokenString = "TK_VARIABLE";
+    
     ans.value = newVariable;
+    
     return ans;
 }
+
+
 variable createNewVariable(string newVariable){
     string curfun = getCurFun();
     funct fun = st.funct_map[curfun];
     map<string,variable> mp = fun.funct_variable_map;
     variable ans;
     if(mp.find(newVariable) == mp.end()){
+        // cout<<"hdekdewnbwejobfewjw"<<endl;
         ans.identifier = newVariable;
         ans.scope = getCurFun();
         ans.lineNo = lineNo;
-        ans.token = createFuncToken(newVariable);
-        fun.funct_variable_map[newVariable] = ans;
-        fun.funct_variable_list.push_back(ans);
+        ans.token = createVariableToken(newVariable);
+        
+        st.funct_map[curfun].funct_variable_map[newVariable] = ans;
+        // cout<<fun.funct_variable_map[newVariable].identifier<<"@@@@@@@"<<endl;
+        st.funct_map[curfun].funct_variable_list.push_back(ans);
     }
     else{
+        // cout<<"xxxxxxxxxxxxxxxxxxxxxxx"<<endl;
         ans = mp[newVariable];
     }
+    //  cout<<fun.funct_variable_map[newVariable].identifier<<"@@@@@@@"<<endl;
     return ans;
     
     
@@ -194,8 +204,8 @@ Array createNewArray(string newArray){
         ans.lineNo = lineNo;
         // ans.len = l;
         ans.token = createFuncToken(newArray);
-        fun.funct_array_map[newArray] = ans;
-        fun.funct_array_list.push_back(ans);
+        st.funct_map[curfun].funct_array_map[newArray] = ans;
+        st.funct_map[curfun].funct_array_list.push_back(ans);
     }
     else{
         ans = mp[newArray];
@@ -691,7 +701,7 @@ token getNextLexeme(vector<char>& buffer){
                     return token;
                 }
             }
-            // handle error
+            // handle errora
             cout<<"no such keyword:"<<str<<"please check syntax"<<endl;
             //******we need to change this token to error token
             token.tokenId = 999;
@@ -763,7 +773,7 @@ token getNextLexeme(vector<char>& buffer){
                         return token;
                     }
                 else{
-                    token = createVariableToken(str);
+                    token = addVariable(str);
                     return token;
                 }
             }
