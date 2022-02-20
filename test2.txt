@@ -10,5 +10,5 @@ Int @main(){
     Int abc12 : 6;
     Int ans12 : @checkeven(abc12);
     ?print(ans12);
-    
+
 }~

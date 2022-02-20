@@ -88,6 +88,7 @@ token addMain(){
     fun.token=ans;
     fun.lineNo=lineNo;
     fun.name=str;
+    fun.specialId=100000 ;//here we set manually
     st.funct_list.push_back(fun);
     updateCurFun(str);
     st.funct_map[str]=fun;
