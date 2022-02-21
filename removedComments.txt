@@ -1,12 +1,27 @@
 
-Int @checkeven(Int val123){
-    If(val123%2 == 0){
-        Return 1;
+Int global12;
+Int @findlength(String str123){
+    Int count123 : 0;
+    Int i1 : 0;
+    While(str123[i1] >= "a" && str123[i1] <= "z"){
+        count123 = count123 + 1;
+        i1 = i1 + 1;
     }
-    Return 0;
+    Return count123;
+}~
+Int @findlengt(String st123){
+    Int coun123 : 0;
+    Int ii1 : 0;
+    While(st123[i1] >= "a" && st123[i1] <= "z"){
+        coun123 = coun123 + 1;
+        ii1 = ii1^1;
+    }
+    Return count123;
 }~
 Int @main(){
-    Int abc12 : 6;
-    Int ans12 : @checkeven(abc12);
-    ?print(ans12);
+    String str123 : "Hello kidney";
+    Int _str123[10];
+    _str123[10];
+    Int len123 : @findlength(str123);
+    ?print(len123);
 }~

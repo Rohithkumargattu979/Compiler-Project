@@ -1,77 +1,22 @@
+/*
+Group No: 30
+Kasina Satwik : 2019A7PS0011H
+Rohan Rao Nallani : 2019A7PS0048H
+Rohith Kumar Gattu : 2019A7PS0049H
+Srikar Sashank Mushnuri : 2019A7PS0160H
+*/
 #include<bits/stdc++.h>
 #include<fstream>
 #include<iostream>
+#include "newlexer.h"
 using namespace std;
-typedef struct{
-    int tokenId;
-    string value;
-    string tokenString;
-    int line;
-} token;
-typedef struct{
-    string identifier;
-    string scope;
-    string type;
-    int lineNo;
-    token token;
-    int len;
-}Array;
-// token that should be generated
-typedef struct{
-    string keyWord;
-    int tokenId;
-} hashTable; // hashtable attributes
 
-typedef struct{
-    string identifier;
-    string scope;
-    string type;
-    int lineNo;
-    token token;
-} variable;
-
-typedef struct{
-    int specialId;
-    string name;
-    string lineNo;
-    token token;
-    vector<variable> funct_variable_list;
-    vector<Array> funct_array_list;
-    map<string,variable> funct_variable_map;
-    map<string,Array> funct_array_map;
-} funct; // assumption : atmost 1000 variables will only be present in any function
-
-typedef struct{
-    vector<variable> variable_list;
-    vector<funct> funct_list;
-    map<string,funct> funct_map;
-    vector<Array> array_list;
-} symbolTable;
-
-
+// ------------------------------------------------------------------------------------------------- //
 symbolTable st;
 
 stack<string> functStack;
-
-int state;
-int offset = 0;
-int lexicalError;
-int lineNo;
-int funcToken = 10000;
-int specialfunid = 10001;
-
-void createLexerHashTable();
-long long hashFunction(string string);
-int lookupFunction(string lexeme);
-
-void removeComments(FILE* testfile);
-
-int getLexErrors();
-void resetLexErrors();
-string PREV_FUN_NAME = "Global";
-string CUR_FUN_NAME;
-// ------------------------------------------------------------------------------------------------- //
 map<int,hashTable> ht;
+// Finding the hash value of the key word or any string.//
 long long hashFunc(string str){
     long long p=31;
     long long mod=1e2+9;
@@ -83,6 +28,8 @@ long long hashFunc(string str){
     }
     return ans;
 }
+
+// If the string or keyword if already exists in the hash table, it returns it's token id or else returns -1
 int lookup(string lexeme){
 
 	int in=hashFunc(lexeme);
@@ -93,11 +40,12 @@ int lookup(string lexeme){
 	return -1;
 
 }
+// function to create hash table to store the tokens of the seen strings.
 void createLexerHashTable(){
 	const int m=1e2+9;
 	
 	char keywords[11][15]={"Int","Float","If","Else","For","While",
-	"Return","String","Void","Array", "main"}; //add few keywords if needed
+	"Return","String","Void","Array", "main"}; // key words in the Kidney language. 
 
 	int tokenids[11]={1,2,3,4,5,6,7,8,9,10,11};
 
@@ -113,15 +61,20 @@ void createLexerHashTable(){
 	}
 
 }
+
+// function which returns the name of the current function in which the scope is present from the test case
 string getCurFun(){
     return CUR_FUN_NAME;
 }
+// if function scope is changed, this function updates the current function
 void updateCurFun(string newName){
     CUR_FUN_NAME = newName;
 }
 bool checkMain(string funName){
     return funName == "main";
 }
+
+// creates and returns the new token to the newly seen function.
 token createFuncToken(string funName){
     token ans;
     ans.tokenId = funcToken;
@@ -151,6 +104,7 @@ token addMain(){
     fun.token=ans;
     fun.lineNo=lineNo;
     fun.name=str;
+    fun.specialId=10001 ;//here we set manually
     st.funct_list.push_back(fun);
     updateCurFun(str);
     st.funct_map[str]=fun;
@@ -172,6 +126,7 @@ token addGlobalFun(){
     st.funct_map[fun.name] = fun;
     return ans;
 }
+// stack is used to make store the sequence of scopes of the function. Once the scope ends, it is popped out of stack.
 void updateAtEnd(){
     if(functStack.size() >1){
         functStack.pop();
@@ -187,7 +142,8 @@ token checkFunc(string funName){
         if(mp.find(funName)==mp.end()){
             t=addMain();
             return t;
-        }else{
+        }
+        else{
             return mp[funName].token;
         }
     }
@@ -200,30 +156,41 @@ token checkFunc(string funName){
     }
     return t;
 }
+// creates token to the newly seen variable type and stores it in the symbol table.
 token createVariableToken(string newVariable){
     token ans;
+    // createNewVariable(newVariable);
     ans.tokenId = st.funct_map[getCurFun()].specialId;
     st.funct_map[getCurFun()].specialId++;
     ans.tokenString = "TK_VARIABLE";
+    
     ans.value = newVariable;
+    
     return ans;
 }
+
+// create a new variable type from the given string, the name of the variable
 variable createNewVariable(string newVariable){
     string curfun = getCurFun();
     funct fun = st.funct_map[curfun];
     map<string,variable> mp = fun.funct_variable_map;
     variable ans;
     if(mp.find(newVariable) == mp.end()){
+        // cout<<"hdekdewnbwejobfewjw"<<endl;
         ans.identifier = newVariable;
         ans.scope = getCurFun();
         ans.lineNo = lineNo;
-        ans.token = createFuncToken(newVariable);
-        fun.funct_variable_map[newVariable] = ans;
-        fun.funct_variable_list.push_back(ans);
+        ans.token = createVariableToken(newVariable);
+        
+        st.funct_map[curfun].funct_variable_map[newVariable] = ans;
+        // cout<<fun.funct_variable_map[newVariable].identifier<<"@@@@@@@"<<endl;
+        st.funct_map[curfun].funct_variable_list.push_back(ans);
     }
     else{
+        // cout<<"xxxxxxxxxxxxxxxxxxxxxxx"<<endl;
         ans = mp[newVariable];
     }
+    //  cout<<fun.funct_variable_map[newVariable].identifier<<"@@@@@@@"<<endl;
     return ans;
     
     
@@ -257,8 +224,8 @@ Array createNewArray(string newArray){
         ans.lineNo = lineNo;
         // ans.len = l;
         ans.token = createFuncToken(newArray);
-        fun.funct_array_map[newArray] = ans;
-        fun.funct_array_list.push_back(ans);
+        st.funct_map[curfun].funct_array_map[newArray] = ans;
+        st.funct_map[curfun].funct_array_list.push_back(ans);
     }
     else{
         ans = mp[newArray];
@@ -287,7 +254,7 @@ token getNextLexeme(vector<char>& buffer){
 
     while(true){
         if(offset >= buffer.size()){
-            token.value = "@";
+            token.value = "@@";
             token.tokenId = 420;
             token.tokenString = "TK_EOF";
             return token;
@@ -312,7 +279,15 @@ token getNextLexeme(vector<char>& buffer){
             token.tokenId=401;
             return token;
         }
-        if(buffer[offset] == '&'){
+        else if(buffer[offset] == '^'){
+            offset++;
+            state = 42;
+            token.value = "^";
+            token.tokenId = 49;
+            token.tokenString = "TK_XOR";
+            return token;
+        }
+        else if(buffer[offset] == '&'){
             offset++;
             if(buffer[offset] == '&'){
                 state = 4;
@@ -385,7 +360,7 @@ token getNextLexeme(vector<char>& buffer){
             if(flag == 0){
                 if(str1.size() <= MAX_INT_LEN){ // len before '.'
                     token.tokenId = 73;
-                    token.tokenString = "TK_INT";
+                    token.tokenString = "TK_NUM";
                     token.value="+"+str1;
                     return token;
                 }
@@ -402,7 +377,7 @@ token getNextLexeme(vector<char>& buffer){
             else{
                 if(fll.size() <=MAX_FLOAT_LEN){
                     token.tokenId = 74;
-                    token.tokenString = "TK_FLOAT";
+                    token.tokenString = "TK_DECIMAL";
                     token.value="+"+str1+fll;
                     return token;
                 }
@@ -459,7 +434,7 @@ token getNextLexeme(vector<char>& buffer){
             if(flag == 0){
                 if(str1.size() <= MAX_INT_LEN){ // len before '.'
                     token.tokenId = 73;
-                    token.tokenString = "TK_INT";
+                    token.tokenString = "TK_NUM";
                     token.value="-"+str1;
                     return token;
                 }
@@ -475,7 +450,7 @@ token getNextLexeme(vector<char>& buffer){
             else{
                 if(fll.size() <=MAX_FLOAT_LEN){
                     token.tokenId = 74;
-                    token.tokenString = "TK_FLOAT";
+                    token.tokenString = "TK_DECIMAL";
                     token.value="-"+str1+fll;
                     return token;
                 }
@@ -492,7 +467,7 @@ token getNextLexeme(vector<char>& buffer){
         }
             token.value = "-";
             token.tokenId = 55;
-            token.tokenString = "TK_MINUS";
+            token.tokenString = "TK_SUB";
             return token;
         }
         else if(buffer[offset] == '*'){
@@ -681,7 +656,7 @@ token getNextLexeme(vector<char>& buffer){
             if(flag == 0){
                 if(str1.size() <= MAX_INT_LEN){ // len before '.'
                     token.tokenId = 73;
-                    token.tokenString = "TK_INT";
+                    token.tokenString = "TK_NUM";
                     token.value=str1;
                     return token;
                 }
@@ -698,7 +673,7 @@ token getNextLexeme(vector<char>& buffer){
             else{
                 if(fll.size() <=MAX_FLOAT_LEN){
                     token.tokenId = 74;
-                    token.tokenString = "TK_FLOAT";
+                    token.tokenString = "TK_DECIMAL";
                     token.value=str1+fll;
                     return token;
                 }
@@ -732,7 +707,7 @@ token getNextLexeme(vector<char>& buffer){
             // cout<<"hello"<<endl;
             token.value = str1;
             token.tokenId = 75;
-            token.tokenString = "TK_STRING";
+            token.tokenString = "TK_STR";
             // cout<<"hello2"<<endl;
             // cout<<token.tokenId<<" "<<token.tokenString<<endl;
             return token;
@@ -754,7 +729,7 @@ token getNextLexeme(vector<char>& buffer){
                     return token;
                 }
             }
-            // handle error
+            // handle errora
             cout<<"no such keyword:"<<str<<"please check syntax"<<endl;
             //******we need to change this token to error token
             token.tokenId = 999;
@@ -826,7 +801,7 @@ token getNextLexeme(vector<char>& buffer){
                         return token;
                     }
                 else{
-                    token = createVariableToken(str);
+                    token = addVariable(str);
                     return token;
                 }
             }
@@ -995,22 +970,23 @@ token getNextLexeme(vector<char>& buffer){
     }
     return token;
 }
-
+// print all the token list.
 void printTokenList(vector<char>& bytes){
-    int morenice = 420; 
+    int notfound = 420; 
     token ans = getNextLexeme(bytes);
-    int halwa = ans.tokenId;
+    int tt = ans.tokenId;
     //also check for error lexeme
-    while(halwa != morenice){
+    while(tt != notfound){
         
         if(ans.tokenId!=22){
         cout<<"Token "<<ans.tokenId<<", "<<ans.tokenString<<", string "<<ans.value<<", line number "<<lineNo;
         cout<<endl;
         }
         ans = getNextLexeme(bytes);
-        halwa = ans.tokenId;
+        tt = ans.tokenId;
     }
 }
+// read the input stream - the testcase txt file.
  vector<char> getInputStream(string str_name){
     string filename(str_name);
     vector<char> bytes;
@@ -1021,6 +997,7 @@ void printTokenList(vector<char>& bytes){
     }
     return bytes;
 }
+// function to remove all the comments given in the test case.
 string removeAllComments(string fileName){
     string filename(fileName);
     vector<char> bytes;
@@ -1050,14 +1027,18 @@ string removeAllComments(string fileName){
     
     return output_file_name;
 }
+// main function.
 int main(){
     lineNo=1;
+    string fileName="test2.txt";//can take as a user input
+    cout<<"Enter file name:"<<endl;
+    cin>>fileName;
     createLexerHashTable();
     token t = addGlobalFun();
     cout<<t.tokenId<<endl;
     cout<<t.tokenString<<endl;
     cout<<t.value<<endl;
-    string fileName="test2.txt";//can take as a user input
+   
     string f2=removeAllComments(fileName);//this returns the filename of the new file with no comments
     vector<char> bytes=getInputStream(f2);
     printTokenList(bytes);
