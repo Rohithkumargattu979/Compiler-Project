@@ -88,7 +88,7 @@ token addMain(){
     fun.token=ans;
     fun.lineNo=lineNo;
     fun.name=str;
-    fun.specialId=100000 ;//here we set manually
+    fun.specialId=10001 ;//here we set manually
     st.funct_list.push_back(fun);
     updateCurFun(str);
     st.funct_map[str]=fun;
@@ -235,7 +235,7 @@ token getNextLexeme(vector<char>& buffer){
 
     while(true){
         if(offset >= buffer.size()){
-            token.value = "@";
+            token.value = "@@";
             token.tokenId = 420;
             token.tokenString = "TK_EOF";
             return token;
@@ -333,7 +333,7 @@ token getNextLexeme(vector<char>& buffer){
             if(flag == 0){
                 if(str1.size() <= MAX_INT_LEN){ // len before '.'
                     token.tokenId = 73;
-                    token.tokenString = "TK_INT";
+                    token.tokenString = "TK_NUM";
                     token.value="+"+str1;
                     return token;
                 }
@@ -350,7 +350,7 @@ token getNextLexeme(vector<char>& buffer){
             else{
                 if(fll.size() <=MAX_FLOAT_LEN){
                     token.tokenId = 74;
-                    token.tokenString = "TK_FLOAT";
+                    token.tokenString = "TK_DECIMAL";
                     token.value="+"+str1+fll;
                     return token;
                 }
@@ -407,7 +407,7 @@ token getNextLexeme(vector<char>& buffer){
             if(flag == 0){
                 if(str1.size() <= MAX_INT_LEN){ // len before '.'
                     token.tokenId = 73;
-                    token.tokenString = "TK_INT";
+                    token.tokenString = "TK_NUM";
                     token.value="-"+str1;
                     return token;
                 }
@@ -423,7 +423,7 @@ token getNextLexeme(vector<char>& buffer){
             else{
                 if(fll.size() <=MAX_FLOAT_LEN){
                     token.tokenId = 74;
-                    token.tokenString = "TK_FLOAT";
+                    token.tokenString = "TK_DECIMAL";
                     token.value="-"+str1+fll;
                     return token;
                 }
@@ -440,7 +440,7 @@ token getNextLexeme(vector<char>& buffer){
         }
             token.value = "-";
             token.tokenId = 55;
-            token.tokenString = "TK_MINUS";
+            token.tokenString = "TK_SUB";
             return token;
         }
         else if(buffer[offset] == '*'){
@@ -629,7 +629,7 @@ token getNextLexeme(vector<char>& buffer){
             if(flag == 0){
                 if(str1.size() <= MAX_INT_LEN){ // len before '.'
                     token.tokenId = 73;
-                    token.tokenString = "TK_INT";
+                    token.tokenString = "TK_NUM";
                     token.value=str1;
                     return token;
                 }
@@ -646,7 +646,7 @@ token getNextLexeme(vector<char>& buffer){
             else{
                 if(fll.size() <=MAX_FLOAT_LEN){
                     token.tokenId = 74;
-                    token.tokenString = "TK_FLOAT";
+                    token.tokenString = "TK_DECIMAL";
                     token.value=str1+fll;
                     return token;
                 }
@@ -1001,7 +1001,7 @@ string removeAllComments(string fileName){
 int main(){
     lineNo=1;
     string fileName="test2.txt";//can take as a user input
-    cout<<"enter file name:"<<endl;
+    cout<<"Enter file name:"<<endl;
     cin>>fileName;
     createLexerHashTable();
     token t = addGlobalFun();
