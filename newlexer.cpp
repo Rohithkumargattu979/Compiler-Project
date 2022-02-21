@@ -1,3 +1,10 @@
+/*
+Group No: 30
+Kasina Satwik : 2019A7PS0011H
+Rohan Rao Nallani : 2019A7PS0048H
+Rohith Kumar Gattu : 2019A7PS0049H
+Srikar Sashank Mushnuri : 2019A7PS0160H
+*/
 #include<bits/stdc++.h>
 #include<fstream>
 #include<iostream>
@@ -9,6 +16,7 @@ symbolTable st;
 
 stack<string> functStack;
 map<int,hashTable> ht;
+// Finding the hash value of the key word or any string.//
 long long hashFunc(string str){
     long long p=31;
     long long mod=1e2+9;
@@ -20,6 +28,8 @@ long long hashFunc(string str){
     }
     return ans;
 }
+
+// If the string or keyword if already exists in the hash table, it returns it's token id or else returns -1
 int lookup(string lexeme){
 
 	int in=hashFunc(lexeme);
@@ -30,11 +40,12 @@ int lookup(string lexeme){
 	return -1;
 
 }
+// function to create hash table to store the tokens of the seen strings.
 void createLexerHashTable(){
 	const int m=1e2+9;
 	
 	char keywords[11][15]={"Int","Float","If","Else","For","While",
-	"Return","String","Void","Array", "main"}; //add few keywords if needed
+	"Return","String","Void","Array", "main"}; // key words in the Kidney language. 
 
 	int tokenids[11]={1,2,3,4,5,6,7,8,9,10,11};
 
@@ -50,15 +61,20 @@ void createLexerHashTable(){
 	}
 
 }
+
+// function which returns the name of the current function in which the scope is present from the test case
 string getCurFun(){
     return CUR_FUN_NAME;
 }
+// if function scope is changed, this function updates the current function
 void updateCurFun(string newName){
     CUR_FUN_NAME = newName;
 }
 bool checkMain(string funName){
     return funName == "main";
 }
+
+// creates and returns the new token to the newly seen function.
 token createFuncToken(string funName){
     token ans;
     ans.tokenId = funcToken;
@@ -110,6 +126,7 @@ token addGlobalFun(){
     st.funct_map[fun.name] = fun;
     return ans;
 }
+// stack is used to make store the sequence of scopes of the function. Once the scope ends, it is popped out of stack.
 void updateAtEnd(){
     if(functStack.size() >1){
         functStack.pop();
@@ -125,7 +142,8 @@ token checkFunc(string funName){
         if(mp.find(funName)==mp.end()){
             t=addMain();
             return t;
-        }else{
+        }
+        else{
             return mp[funName].token;
         }
     }
@@ -138,6 +156,7 @@ token checkFunc(string funName){
     }
     return t;
 }
+// creates token to the newly seen variable type and stores it in the symbol table.
 token createVariableToken(string newVariable){
     token ans;
     // createNewVariable(newVariable);
@@ -150,7 +169,7 @@ token createVariableToken(string newVariable){
     return ans;
 }
 
-
+// create a new variable type from the given string, the name of the variable
 variable createNewVariable(string newVariable){
     string curfun = getCurFun();
     funct fun = st.funct_map[curfun];
@@ -260,7 +279,15 @@ token getNextLexeme(vector<char>& buffer){
             token.tokenId=401;
             return token;
         }
-        if(buffer[offset] == '&'){
+        else if(buffer[offset] == '^'){
+            offset++;
+            state = 42;
+            token.value = "^";
+            token.tokenId = 49;
+            token.tokenString = "TK_XOR";
+            return token;
+        }
+        else if(buffer[offset] == '&'){
             offset++;
             if(buffer[offset] == '&'){
                 state = 4;
@@ -680,7 +707,7 @@ token getNextLexeme(vector<char>& buffer){
             // cout<<"hello"<<endl;
             token.value = str1;
             token.tokenId = 75;
-            token.tokenString = "TK_STRING";
+            token.tokenString = "TK_STR";
             // cout<<"hello2"<<endl;
             // cout<<token.tokenId<<" "<<token.tokenString<<endl;
             return token;
@@ -943,22 +970,23 @@ token getNextLexeme(vector<char>& buffer){
     }
     return token;
 }
-
+// print all the token list.
 void printTokenList(vector<char>& bytes){
-    int morenice = 420; 
+    int notfound = 420; 
     token ans = getNextLexeme(bytes);
-    int halwa = ans.tokenId;
+    int tt = ans.tokenId;
     //also check for error lexeme
-    while(halwa != morenice){
+    while(tt != notfound){
         
         if(ans.tokenId!=22){
         cout<<"Token "<<ans.tokenId<<", "<<ans.tokenString<<", string "<<ans.value<<", line number "<<lineNo;
         cout<<endl;
         }
         ans = getNextLexeme(bytes);
-        halwa = ans.tokenId;
+        tt = ans.tokenId;
     }
 }
+// read the input stream - the testcase txt file.
  vector<char> getInputStream(string str_name){
     string filename(str_name);
     vector<char> bytes;
@@ -969,6 +997,7 @@ void printTokenList(vector<char>& bytes){
     }
     return bytes;
 }
+// function to remove all the comments given in the test case.
 string removeAllComments(string fileName){
     string filename(fileName);
     vector<char> bytes;
@@ -998,6 +1027,7 @@ string removeAllComments(string fileName){
     
     return output_file_name;
 }
+// main function.
 int main(){
     lineNo=1;
     string fileName="test2.txt";//can take as a user input

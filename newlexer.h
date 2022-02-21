@@ -58,7 +58,7 @@ int lineNo;
 int funcToken = 10000;
 int specialfunid = 10001;
 string PREV_FUN_NAME = "Global";
-string CUR_FUN_NAME;
+string CUR_FUN_NAME = "Global";
 void createLexerHashTable();
 long long hashFunction(string string);
 int lookupFunction(string lexeme);

@@ -7,7 +7,7 @@ Int @findlength(String str123){
         i1 = i1 + 1;
     }
     Return count123;
-}
+}~
 Int @main(){
     String str123 : "Hello kidney";
     Int len123 : @findlength(str123);

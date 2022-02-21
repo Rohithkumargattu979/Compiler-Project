@@ -1,4 +1,5 @@
 # kidney program to find the length of the given string.
+Int global12;
 Int @findlength(String str123){
     Int count123 : 0;
     Int i1 : 0;
@@ -7,16 +8,16 @@ Int @findlength(String str123){
         i1 = i1 + 1;
     }
     Return count123;
-}
+}~
 Int @findlengt(String st123){
     Int coun123 : 0;
     Int ii1 : 0;
     While(st123[i1] >= "a" && st123[i1] <= "z"){
         coun123 = coun123 + 1;
-        ii1 = ii1 + 1;
+        ii1 = ii1^1;
     }
     Return count123;
-}
+}~
 Int @main(){
     String str123 : "Hello kidney";
     Int _str123[10];
