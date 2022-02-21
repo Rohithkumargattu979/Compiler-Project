@@ -759,7 +759,7 @@ token getNextLexeme(vector<char>& buffer){
                 }
                 if(flagalpha == 0){
                     // handle error
-                    cout<<"Error! Line No:"<<lineNo<<" Variable should have atleast one alphabet in decleration"<<endl;
+                    cout<<"Error! Line No:"<<lineNo<<" Variable should have atleast two alphabet in decleration"<<endl;
                     token.tokenId = 999;
                     token.tokenString = "TK_ERROR";
                     token.value = "Syntax Error";
