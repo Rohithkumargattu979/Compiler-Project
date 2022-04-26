@@ -1,14 +1,12 @@
 # all letters should be lower case, only keywords contain uppercase letters.
 # code to check if given integer is even or not.
 Int @checkeven(Int val123){
-    If(val123%2 == 0){
-        Return 1;
-    }
+    Int abc34;
+    abc34 : 56;
     Return 0;
-}~
+}
 Int @main(){
-    Int abc12 : 6;
-    Int ans12 : @checkeven(abc12);
-    ?print(ans12);
-
-}~
+    Int abc12;
+    abc12 : 76;
+    Return 0;
+}

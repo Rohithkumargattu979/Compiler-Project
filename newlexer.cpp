@@ -79,7 +79,7 @@ token createFuncToken(string funName){
     token ans;
     ans.tokenId = funcToken;
     ans.value = funName;
-    ans.tokenString = "TKFUNCT";
+    ans.tokenString = "TKFUNCID";
     funcToken += 1000;
     funct fun;
     fun.specialId = specialfunid;
@@ -726,7 +726,12 @@ token getNextLexeme(vector<char>& buffer){
                 if(lookup(str) != -1){
                     token.tokenId = ht[hashFunc(str)].tokenId;
                     token.value = str;
-                    token.tokenString = "TK" + ht[hashFunc(str)].keyWord;
+                    string s = ht[hashFunc(str)].keyWord;
+
+                    for(int i=0;i<s.size();i++){
+                        s[i]=toupper(s[i]);
+                    }
+                    token.tokenString = "TK" + s;
                     return token;
                 }
             }
@@ -987,6 +992,25 @@ void printTokenList(vector<char>& bytes){
         tt = ans.tokenId;
     }
 }
+
+void printTokenListtoFile(vector<char>& bytes){
+    int notfound = 420; 
+    freopen("Token_gen.txt","w",stdout);
+    token ans = getNextLexeme(bytes);
+    int tt = ans.tokenId;
+    //also check for error lexeme
+    while(tt != notfound){
+        
+        if(ans.tokenId!=22){
+        cout<<ans.tokenString<<" ";
+        
+        }
+        ans = getNextLexeme(bytes);
+        tt = ans.tokenId;
+    }
+    cout<<"$"<<endl;
+}
+
 // read the input stream - the testcase txt file.
  vector<char> getInputStream(string str_name){
     string filename(str_name);
@@ -1042,6 +1066,7 @@ int main(){
    
     string f2=removeAllComments(fileName);//this returns the filename of the new file with no comments
     vector<char> bytes=getInputStream(f2);
-    printTokenList(bytes);
+    //printTokenList(bytes);
+    printTokenListtoFile(bytes);
     
 }

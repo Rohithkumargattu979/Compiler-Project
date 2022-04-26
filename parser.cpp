@@ -22,6 +22,62 @@ void printTree(Node n ){
     }
 
 }
+void printNTree(Node x, vector<bool> flag, int depth = 0, bool isLast = false){
+        //cout<<x.str<<endl;
+        for (int i = 0; i < depth; ++i) {
+            
+            // Condition when the depth
+            // is exploring
+            if (flag[i] == true) {
+                cout << "| "
+                    << " "
+                    << " "
+                    << " ";
+            }
+            
+            // Otherwise print
+            // the blank spaces
+            else {
+                cout << " "
+                    << " "
+                    << " "
+                    << " ";
+            }
+        }
+        
+        // Condition when the current
+        // node is the root node
+        if (depth == 0)
+            cout << x.str << '\n';
+        
+        // Condition when the node is
+        // the last node of
+        // the exploring depth
+        else if (isLast) {
+            cout << "+--- " << x.str << '\n';
+            
+            // No more childrens turn it
+            // to the non-exploring depth
+            flag[depth] = false;
+        }
+        else {
+            cout << "+--- " << x.str << '\n';
+        }
+    
+        int it = 0;
+        for(auto i = 0; i<x.children.size(); i++, it++){
+            printNTree(x.children[i], flag, depth+1, it == (x.children.size()-1));
+            
+        }
+        // for (auto i = x->root.begin();
+        // i != x->root.end(); ++i, ++it)
+    
+        //     // Recursive call for the
+        //     // children nodes
+        //     printNTree(*i, flag, depth + 1,
+        //         it == (x->root.size()) - 1);
+        flag[depth] = true;
+}
 void printTree_level_order(Node n){
     queue<Node> q;
     q.push(n);
@@ -1522,6 +1578,9 @@ int main(){
     fillhm();
     Node res = parse();
     cout<<"The Parse Tree generated for our grammar is : " << endl;
-    printTree_level_order(res);
+    vector<bool> flag(100,true);
+    //printTree_level_order(res);
+    cout<<"Tree Representation is as follows"<<endl;
+    printNTree(res,flag);
 
 }
