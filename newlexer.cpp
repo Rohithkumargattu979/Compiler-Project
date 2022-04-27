@@ -1009,7 +1009,28 @@ void printTokenListtoFile(vector<char>& bytes){
         tt = ans.tokenId;
     }
     cout<<"$"<<endl;
+
 }
+
+void printTokenListandIDtoFile(vector<char>& bytes){
+    int notfound = 420; 
+    freopen("Token_gen_and_id.txt","w",stdout);
+    token ans = getNextLexeme(bytes);
+    int tt = ans.tokenId;
+    //also check for error lexeme
+    while(tt != notfound){
+        
+        if(ans.tokenId!=22){
+        cout<<ans.tokenString<<" "<<ans.value<<" ";
+        
+        }
+        ans = getNextLexeme(bytes);
+        tt = ans.tokenId;
+    }
+    cout<<"$"<<endl;
+    
+}
+
 
 // read the input stream - the testcase txt file.
  vector<char> getInputStream(string str_name){
@@ -1067,6 +1088,7 @@ int main(){
     string f2=removeAllComments(fileName);//this returns the filename of the new file with no comments
     vector<char> bytes=getInputStream(f2);
     //printTokenList(bytes);
-    printTokenListtoFile(bytes);
+    //printTokenListtoFile(bytes);
+    printTokenListandIDtoFile(bytes);
     
 }

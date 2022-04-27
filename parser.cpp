@@ -1,11 +1,12 @@
 #include<bits/stdc++.h>
 #include "newlexer.h"
+#include "parser.h"
 #include<fstream>
 
 using namespace std;
 
-map<pair< int,string >,string > mp;
-map <int,string> hm;
+// map<pair< int,string >,string > mp;
+// map <int,string> hm;
 vector<string> inp_tokens;
 
 struct Node{
@@ -914,10 +915,10 @@ void insert(){
  mp[{110,"TKADD"}] = "s84";
  mp[{130,"TKADD"}] = "s84";
  mp[{131,"TKADD"}] = "s84";
- mp[{138,"TKADD"}] = "s84 / r40";
+ mp[{138,"TKADD"}] = "s84";
  mp[{139,"TKADD"}] = "r45";
  mp[{141,"TKADD"}] = "s84";
- mp[{163,"TKADD"}] = "s84 / r40";
+ mp[{163,"TKADD"}] = "s84";
  mp[{164,"TKADD"}] = "r45";
  mp[{174,"TKADD"}] = "s84";
  mp[{176,"TKADD"}] = "s84";
@@ -956,10 +957,10 @@ void insert(){
  mp[{110,"TKMUL"}] = "s86";
  mp[{130,"TKMUL"}] = "s86";
  mp[{131,"TKMUL"}] = "s86";
- mp[{138,"TKMUL"}] = "s86 / r40";
+ mp[{138,"TKMUL"}] = "s86";
  mp[{139,"TKMUL"}] = "r45";
  mp[{141,"TKMUL"}] = "s86";
- mp[{163,"TKMUL"}] = "s86 / r40";
+ mp[{163,"TKMUL"}] = "s86";
  mp[{164,"TKMUL"}] = "r45";
  mp[{174,"TKMUL"}] = "s86";
  mp[{176,"TKMUL"}] = "s86";
@@ -1469,11 +1470,23 @@ void splitSpaces(string s,vector<string>& arr){
         arr.push_back(curr);
     }
 }
+struct Attr{
+    string value;
+    string type;
+};
+
+vector<string> token_vals;
+
 Node parse(){
     //pair<TK_MAIN,0> 0 IS THE STATE
    
    stack<pair<string,int>> st;
    stack<Node> node_st;
+   stack<Attr> attr_st;
+   Attr a;
+   a.value = "";
+   a.type = "";
+   attr_st.push(a);
    st.push({"",0});
    Node n;
    n.str="";
@@ -1487,6 +1500,7 @@ Node parse(){
    if(!checkifSlash(mp[{st.top().second,tk}])){
        //handle error
         cout<<"Warning! Please check the grammar if it has R-R or S-R conflicts"<<endl;
+
    }
    if(mp.find({st.top().second,tk})==mp.end()){
        //report error
@@ -1562,15 +1576,20 @@ Node parse(){
 }
 int main(){
     
-    freopen("Token_gen.txt","r",stdin);
+    freopen("Token_gen_and_id.txt","r",stdin);
     
     string tk;
+    string tk1;
     while(true){
         cin>>tk;
         inp_tokens.push_back(tk);
         if(tk=="$"){
             break;
         }
+        cin>>tk1;
+        token_vals.push_back(tk1);
+        
+        
     }
     inp_tokens.push_back("@");
     // freopen("parser_op.txt","w",stdout);

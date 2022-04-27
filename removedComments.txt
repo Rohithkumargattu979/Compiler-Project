@@ -2,11 +2,11 @@
 
 Int @checkeven(Int val123){
     Int abc34;
-    abc34 : 56;
+    abc34 : 56 + 76 + 65;
     Return 0;
 }
 Int @main(){
     Int abc12;
-    abc12 : 76;
+    abc12 : 76 * 67;
     Return 0;
 }
