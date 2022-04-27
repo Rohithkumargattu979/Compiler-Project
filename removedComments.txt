@@ -1,15 +1,12 @@
 
-Int @findlength(String str123){
-    Int count123 : 0;
-    Int ii1 : 0;
-    While(str123[ii1] >= "a" && str123[ii1] <= "z"){
-        count123 : count123 + 1;
-        ii1 : ii1 + 1;
-    }
-    Return count123;
-}~
+
+Int @checkeven(Int val123){
+    Int abc34;
+    abc34 : 56 + 76 + 65;
+    Return 0;
+}
 Int @main(){
-    String str123 : "Hello kidney";
-    Int len123 : @findlength(str123);
-    ?print(len123);
-}~
+    Int abc12;
+    abc12 : 76 * 67;
+    Return 0;
+}
