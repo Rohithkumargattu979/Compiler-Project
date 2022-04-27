@@ -1,25 +1,13 @@
-8
+If val123 == 0  go to 9
 ans123=1
-
 t1=100+25
 t2=ans123*t1
 ans100=t2
-
 t3=43-ans100
 t4=ans123+t3
 ans123=t4
-
 ans123=0
-
 ans100=5
-
+If val123 < val124  go to 13
 ans143=1
-
 ans143=0
-
-t5=abs1434/123
-t6=67+t5
-t7=76*t6
-abc12=t7
-
-
