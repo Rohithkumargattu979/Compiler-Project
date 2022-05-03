@@ -1484,7 +1484,7 @@ void insert(){
  mp[{112,"TKASSIGN"}] = "s70";
  mp[{141,"TKASSIGN"}] = "s70";
  mp[{192,"TKASSIGN"}] = "s70";
- mp[{1,"$"}] = "acc";
+ mp[{1,"$"}] = "ACCEPT";
  mp[{3,"$"}] = "r2";
  mp[{10,"$"}] = "r1";
  mp[{24,"$"}] = "r3";
@@ -1828,7 +1828,43 @@ struct Attr{
 };
 
 vector<string> token_vals;
-
+stack<string> tkstack;
+vector<string> tkleft;
+vector<string> tkright;
+map<string,string> tkmap; // value and type
+bool typeCheck(vector<string> left, vector<string> right){
+    bool ans = true;
+    if(left.size() == 0){
+        return false;
+    }
+    string lval = left[0];
+    string ltype = tkmap[lval];
+    stack<string> sttt;
+    sttt.push(ltype);
+    int n = right.size();
+    for(int i=0; i<n; i++){
+        if(right[i] == "TKINT" || right[i] == "TKFLOAT" || right[i] == "TKSTRING"){
+            if(sttt.top() == right[i]){
+                sttt.push(right[i]);
+            }
+            else{
+                //cout<<"ERROR! Assignment operation not compatible"<<endl;
+                return false;
+            }
+        }
+        else{
+            string rtype = tkmap[right[i]];
+            if(sttt.top() == rtype){
+                sttt.push(rtype);
+            }
+            else{
+                //cout<<"ERROR! Assignment operation not compatible"<<endl;
+                return false;
+            }
+        }
+    }
+    return true;
+}
 Node parse(){
     //pair<TK_MAIN,0> 0 IS THE STATE
    
@@ -1848,11 +1884,53 @@ Node parse(){
    Node ans;
    while(curr<inp_tokens.size()){
        tk=inp_tokens[curr];
+       //cout<<tk<<"tktk"<<endl;
+       tkstack.push(tk);
+       if(tk == "TKVARID"){
+           tkstack.pop();
+           string t1 = tkstack.top();
+           if(t1 == "TKINT" || t1 == "TKFLOAT" || t1 == "TKSTRING" ){
+               tkmap[token_vals[curr]] = t1;
+           }
+       }
+       if(tk == "TKASSIGN"){
+           tkstack.pop();
+           if(tkmap.find(token_vals[curr-1]) == tkmap.end()){
+               cout<<"ERROR! " + token_vals[curr-1] + " not declared"<<endl;
+           }
+           else{
+               tkleft.push_back(token_vals[curr-1]);
+               int i = curr+1;
+               while(inp_tokens[i] != "TKSEMICOLON"){
+                   if(inp_tokens[i] == "TKVARID"){
+                       if(tkmap.find(token_vals[i]) == tkmap.end()){
+                            cout<<"ERROR! " + token_vals[i] + " not declared"<<endl;
+                        }
+                       tkright.push_back(token_vals[i]);
+                   }
+                   else if(inp_tokens[i] == "TKNUM"){
+                       tkright.push_back("TKINT");
+                   }
+                   else if(inp_tokens[i] == "TKDECIMAL"){
+                       tkright.push_back("TKFLOAT");
+                   }
+                   else if(inp_tokens[i] == "TKALPHA"){
+                       tkright.push_back("TKSTRING");
+                   }
+                   i++;
+               }
+           }
+           if(!typeCheck(tkleft,tkright)){
+               cout<<"ERROR! Assignment statement not compatible"<<endl;
+               tkleft.clear();
+               tkright.clear();
+           }
+
+       }
        if(tk=="@")return ans;
-   if(!checkifSlash(mp[{st.top().second,tk}])){
+    if(!checkifSlash(mp[{st.top().second,tk}])){
        //handle error
         cout<<"Warning! Please check the grammar if it has R-R or S-R conflicts"<<endl;
-
    }
    if(mp.find({st.top().second,tk})==mp.end()){
        //report error
@@ -1917,7 +1995,7 @@ Node parse(){
    }
    else{
       //error
-      //cout<<"Warning!: No match found"<<endl;
+      cout<<"Warning!: No match found"<<endl;
       curr++;
    }
    
@@ -1929,7 +2007,7 @@ Node parse(){
 int main(){
     
     freopen("Token_gen_and_id.txt","r",stdin);
-    
+    freopen("FinalOP.txt","w",stdout);
     string tk;
     string tk1;
     while(true){

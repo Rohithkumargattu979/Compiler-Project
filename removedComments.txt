@@ -2,12 +2,15 @@
 
 Int @main(){
     Int abc12;
-    abc12 : 76 * 67+abs1434/123;Int ans123;
+    Int abs1434;
+    abc12 : 76 * 67+abs1434/123;
+    Int ans123;
     Int ans143;
-    Int ans100;
+    String str123;
     If(val123 == 0){
         ans123 : 1;
         ans100 : ans123*100  + 25;
+        ans123: ans100 + str123;
     }
     Else{
         ans123 : 0;

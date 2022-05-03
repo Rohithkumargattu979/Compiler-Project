@@ -1,0 +1,504 @@
+TKINT 7
+reducing using VARTYPE TKINT 
+going to state 6
+reducing using DATATYPE VARTYPE
+going to state 5
+TKMAIN 12
+TKSMOPEN 14
+TKSMCLOSED 16
+TKFLOWOPEN 25
+TKINT 21
+reducing using VARTYPE TKINT 
+going to state 43
+TKVARID 65
+TKSEMICOLON 109
+reducing using DECLARATION VARTYPE TKVARID TKSEMICOLON
+going to state 34
+reducing using STMT DECLARATION
+going to state 32
+TKINT 21
+reducing using VARTYPE TKINT 
+going to state 43
+TKVARID 65
+TKSEMICOLON 109
+reducing using DECLARATION VARTYPE TKVARID TKSEMICOLON
+going to state 34
+reducing using STMT DECLARATION
+going to state 32
+TKVARID 47
+TKASSIGN 70
+reducing using ASSIGNOP TKASSIGN
+going to state 69
+TKNUM 60
+reducing using EXPR TKNUM
+going to state 114
+TKMUL 86
+reducing using ARITHMETIC TKMUL 
+going to state 80
+reducing using OPERATOR ARITHMETIC
+going to state 79
+TKNUM 60
+reducing using EXPR TKNUM
+going to state 121
+TKADD 84
+reducing using ARITHMETIC TKADD
+going to state 80
+reducing using OPERATOR ARITHMETIC
+going to state 79
+TKVARID 59
+reducing using EXPR TKVARID
+going to state 121
+TKDIV 87
+reducing using ARITHMETIC TKDIV
+going to state 80
+reducing using OPERATOR ARITHMETIC
+going to state 79
+TKNUM 60
+reducing using EXPR TKNUM
+going to state 121
+reducing using EXPR EXPR OPERATOR EXPR
+going to state 121
+reducing using EXPR EXPR OPERATOR EXPR
+going to state 121
+reducing using EXPR EXPR OPERATOR EXPR
+going to state 114
+TKSEMICOLON 149
+reducing using ASSIGNMENT TKVARID ASSIGNOP EXPR TKSEMICOLON
+going to state 39
+reducing using STMT ASSIGNMENT
+going to state 32
+TKINT 21
+reducing using VARTYPE TKINT 
+going to state 43
+TKVARID 65
+TKSEMICOLON 109
+reducing using DECLARATION VARTYPE TKVARID TKSEMICOLON
+going to state 34
+reducing using STMT DECLARATION
+going to state 32
+TKINT 21
+reducing using VARTYPE TKINT 
+going to state 43
+TKVARID 65
+TKSEMICOLON 109
+reducing using DECLARATION VARTYPE TKVARID TKSEMICOLON
+going to state 34
+reducing using STMT DECLARATION
+going to state 32
+TKSTRING 23
+reducing using VARTYPE TKSTRING
+going to state 43
+TKVARID 65
+TKSEMICOLON 109
+reducing using DECLARATION VARTYPE TKVARID TKSEMICOLON
+going to state 34
+reducing using STMT DECLARATION
+going to state 32
+TKIF 44
+TKSMOPEN 66
+TKVARID 102
+reducing using EXPR TKVARID
+going to state 110
+TKEQUALS 99
+reducing using COMPARISION TKEQUALS
+going to state 83
+Warning!: No match found - improper reduction
+reducing using OPERATOR  COMPARISION
+going to state 123
+TKNUM 103
+reducing using EXPR TKNUM
+going to state 155
+reducing using EXPR EXPR OPERATOR EXPR
+going to state 110
+TKSMCLOSED 145
+TKFLOWOPEN 169
+TKVARID 141
+TKASSIGN 70
+reducing using ASSIGNOP TKASSIGN
+going to state 164
+TKNUM 60
+reducing using EXPR TKNUM
+going to state 183
+TKSEMICOLON 199
+reducing using ASSIGNMENT TKVARID ASSIGNOP EXPR TKSEMICOLON
+going to state 133
+reducing using STMT ASSIGNMENT
+going to state 127
+TKVARID 141
+ERROR! ans100 not declared
+TKASSIGN 70
+reducing using ASSIGNOP TKASSIGN
+going to state 164
+TKVARID 59
+reducing using EXPR TKVARID
+going to state 183
+TKMUL 86
+reducing using ARITHMETIC TKMUL 
+going to state 80
+reducing using OPERATOR ARITHMETIC
+going to state 79
+TKNUM 60
+reducing using EXPR TKNUM
+going to state 121
+TKADD 84
+reducing using ARITHMETIC TKADD
+going to state 80
+reducing using OPERATOR ARITHMETIC
+going to state 79
+TKNUM 60
+reducing using EXPR TKNUM
+going to state 121
+reducing using EXPR EXPR OPERATOR EXPR
+going to state 121
+reducing using EXPR EXPR OPERATOR EXPR
+going to state 183
+TKSEMICOLON 199
+reducing using ASSIGNMENT TKVARID ASSIGNOP EXPR TKSEMICOLON
+going to state 133
+reducing using STMT ASSIGNMENT
+going to state 127
+TKVARID 141
+ERROR! ans100 not declared
+ERROR! Assignment statement not compatible
+TKASSIGN 70
+reducing using ASSIGNOP TKASSIGN
+going to state 164
+TKVARID 59
+reducing using EXPR TKVARID
+going to state 183
+TKADD 84
+reducing using ARITHMETIC TKADD
+going to state 80
+reducing using OPERATOR ARITHMETIC
+going to state 79
+TKVARID 59
+reducing using EXPR TKVARID
+going to state 121
+reducing using EXPR EXPR OPERATOR EXPR
+going to state 183
+TKSEMICOLON 199
+reducing using ASSIGNMENT TKVARID ASSIGNOP EXPR TKSEMICOLON
+going to state 133
+reducing using STMT ASSIGNMENT
+going to state 127
+reducing using STMTS STMT
+going to state 158
+reducing using STMTS STMT STMTS
+going to state 158
+reducing using STMTS STMT STMTS
+going to state 189
+TKFLOWCLOSED 205
+reducing using CONDBODY TKFLOWOPEN STMTS TKFLOWCLOSED
+going to state 168
+reducing using IF TKIF TKSMOPEN EXPR TKSMCLOSED CONDBODY
+going to state 35
+TKELSE 64
+TKFLOWOPEN 108
+TKVARID 141
+TKASSIGN 70
+reducing using ASSIGNOP TKASSIGN
+going to state 164
+TKNUM 60
+reducing using EXPR TKNUM
+going to state 183
+TKSEMICOLON 199
+reducing using ASSIGNMENT TKVARID ASSIGNOP EXPR TKSEMICOLON
+going to state 133
+reducing using STMT ASSIGNMENT
+going to state 127
+reducing using STMTS STMT
+going to state 125
+TKFLOWCLOSED 157
+reducing using CONDBODY TKFLOWOPEN STMTS TKFLOWCLOSED
+going to state 107
+reducing using IFELSE IF TKELSE CONDBODY
+going to state 36
+reducing using STMT IFELSE
+going to state 32
+TKIF 44
+TKSMOPEN 66
+TKVARID 102
+reducing using EXPR TKVARID
+going to state 110
+TKLT 95
+reducing using COMPARISION TKLT
+going to state 83
+Warning!: No match found - improper reduction
+reducing using OPERATOR  COMPARISION
+going to state 123
+TKVARID 102
+reducing using EXPR TKVARID
+going to state 155
+reducing using EXPR EXPR OPERATOR EXPR
+going to state 110
+TKSMCLOSED 145
+TKFLOWOPEN 169
+TKVARID 141
+TKASSIGN 70
+reducing using ASSIGNOP TKASSIGN
+going to state 164
+TKNUM 60
+reducing using EXPR TKNUM
+going to state 183
+TKSEMICOLON 199
+reducing using ASSIGNMENT TKVARID ASSIGNOP EXPR TKSEMICOLON
+going to state 133
+reducing using STMT ASSIGNMENT
+going to state 127
+reducing using STMTS STMT
+going to state 189
+TKFLOWCLOSED 205
+reducing using CONDBODY TKFLOWOPEN STMTS TKFLOWCLOSED
+going to state 168
+reducing using IF TKIF TKSMOPEN EXPR TKSMCLOSED CONDBODY
+going to state 35
+TKELSE 64
+TKFLOWOPEN 108
+TKVARID 141
+TKASSIGN 70
+reducing using ASSIGNOP TKASSIGN
+going to state 164
+TKNUM 60
+reducing using EXPR TKNUM
+going to state 183
+TKSEMICOLON 199
+reducing using ASSIGNMENT TKVARID ASSIGNOP EXPR TKSEMICOLON
+going to state 133
+reducing using STMT ASSIGNMENT
+going to state 127
+reducing using STMTS STMT
+going to state 125
+TKFLOWCLOSED 157
+reducing using CONDBODY TKFLOWOPEN STMTS TKFLOWCLOSED
+going to state 107
+reducing using IFELSE IF TKELSE CONDBODY
+going to state 36
+reducing using STMT IFELSE
+going to state 32
+reducing using STMTS STMT
+going to state 57
+reducing using STMTS STMT STMTS
+going to state 57
+reducing using STMTS STMT STMTS
+going to state 57
+reducing using STMTS STMT STMTS
+going to state 57
+reducing using STMTS STMT STMTS
+going to state 57
+reducing using STMTS STMT STMTS
+going to state 57
+reducing using STMTS STMT STMTS
+going to state 57
+reducing using STMTS STMT STMTS
+going to state 30
+TKRETURN 33
+TKNUM 60
+reducing using EXPR TKNUM
+going to state 58
+TKSEMICOLON 78
+reducing using RETURN TKRETURN EXPR TKSEMICOLON
+going to state 55
+TKFLOWCLOSED 77
+reducing using BODY TKFLOWOPEN STMTS RETURN TKFLOWCLOSED
+going to state 24
+reducing using MAIN DATATYPE TKMAIN TKSMOPEN TKSMCLOSED BODY
+going to state 3
+reducing using PROGRAM MAIN
+going to state 1
+ACCEPTED 
+The Parse Tree generated for our grammar is : 
+Tree Representation is as follows
+PROGRAM
+|    +--- MAIN
+|        +--- DATATYPE
+|        |    +--- VARTYPE
+|        |        +--- TKINT
+|        +--- TKMAIN
+|        +--- TKSMOPEN
+|        +--- TKSMCLOSED
+|        +--- BODY
+|            +--- TKFLOWOPEN
+|            +--- STMTS
+|            |    +--- STMT
+|            |    |    +--- DECLARATION
+|            |    |        +--- VARTYPE
+|            |    |        |    +--- TKINT
+|            |    |        +--- TKVARID
+|            |    |        +--- TKSEMICOLON
+|            |    +--- STMTS
+|            |        +--- STMT
+|            |        |    +--- DECLARATION
+|            |        |        +--- VARTYPE
+|            |        |        |    +--- TKINT
+|            |        |        +--- TKVARID
+|            |        |        +--- TKSEMICOLON
+|            |        +--- STMTS
+|            |            +--- STMT
+|            |            |    +--- ASSIGNMENT
+|            |            |        +--- TKVARID
+|            |            |        +--- ASSIGNOP
+|            |            |        |    +--- TKASSIGN
+|            |            |        +--- EXPR
+|            |            |        |    +--- EXPR
+|            |            |        |    |    +--- TKNUM
+|            |            |        |    +--- OPERATOR
+|            |            |        |    |    +--- ARITHMETIC
+|            |            |        |    |        +--- TKMUL
+|            |            |        |    +--- EXPR
+|            |            |        |        +--- EXPR
+|            |            |        |        |    +--- TKNUM
+|            |            |        |        +--- OPERATOR
+|            |            |        |        |    +--- ARITHMETIC
+|            |            |        |        |        +--- TKADD
+|            |            |        |        +--- EXPR
+|            |            |        |            +--- EXPR
+|            |            |        |            |    +--- TKVARID
+|            |            |        |            +--- OPERATOR
+|            |            |        |            |    +--- ARITHMETIC
+|            |            |        |            |        +--- TKDIV
+|            |            |        |            +--- EXPR
+|            |            |        |                +--- TKNUM
+|            |            |        +--- TKSEMICOLON
+|            |            +--- STMTS
+|            |                +--- STMT
+|            |                |    +--- DECLARATION
+|            |                |        +--- VARTYPE
+|            |                |        |    +--- TKINT
+|            |                |        +--- TKVARID
+|            |                |        +--- TKSEMICOLON
+|            |                +--- STMTS
+|            |                    +--- STMT
+|            |                    |    +--- DECLARATION
+|            |                    |        +--- VARTYPE
+|            |                    |        |    +--- TKINT
+|            |                    |        +--- TKVARID
+|            |                    |        +--- TKSEMICOLON
+|            |                    +--- STMTS
+|            |                        +--- STMT
+|            |                        |    +--- DECLARATION
+|            |                        |        +--- VARTYPE
+|            |                        |        |    +--- TKSTRING
+|            |                        |        +--- TKVARID
+|            |                        |        +--- TKSEMICOLON
+|            |                        +--- STMTS
+|            |                            +--- STMT
+|            |                            |    +--- IFELSE
+|            |                            |        +--- IF
+|            |                            |        |    +--- TKIF
+|            |                            |        |    +--- TKSMOPEN
+|            |                            |        |    +--- EXPR
+|            |                            |        |    |    +--- EXPR
+|            |                            |        |    |    |    +--- TKVARID
+|            |                            |        |    |    +--- OPERATOR
+|            |                            |        |    |    |    +--- COMPARISION
+|            |                            |        |    |    |        +--- TKEQUALS
+|            |                            |        |    |    +--- EXPR
+|            |                            |        |    |        +--- TKNUM
+|            |                            |        |    +--- TKSMCLOSED
+|            |                            |        |    +--- CONDBODY
+|            |                            |        |        +--- TKFLOWOPEN
+|            |                            |        |        +--- STMTS
+|            |                            |        |        |    +--- STMT
+|            |                            |        |        |    |    +--- ASSIGNMENT
+|            |                            |        |        |    |        +--- TKVARID
+|            |                            |        |        |    |        +--- ASSIGNOP
+|            |                            |        |        |    |        |    +--- TKASSIGN
+|            |                            |        |        |    |        +--- EXPR
+|            |                            |        |        |    |        |    +--- TKNUM
+|            |                            |        |        |    |        +--- TKSEMICOLON
+|            |                            |        |        |    +--- STMTS
+|            |                            |        |        |        +--- STMT
+|            |                            |        |        |        |    +--- ASSIGNMENT
+|            |                            |        |        |        |        +--- TKVARID
+|            |                            |        |        |        |        +--- ASSIGNOP
+|            |                            |        |        |        |        |    +--- TKASSIGN
+|            |                            |        |        |        |        +--- EXPR
+|            |                            |        |        |        |        |    +--- EXPR
+|            |                            |        |        |        |        |    |    +--- TKVARID
+|            |                            |        |        |        |        |    +--- OPERATOR
+|            |                            |        |        |        |        |    |    +--- ARITHMETIC
+|            |                            |        |        |        |        |    |        +--- TKMUL
+|            |                            |        |        |        |        |    +--- EXPR
+|            |                            |        |        |        |        |        +--- EXPR
+|            |                            |        |        |        |        |        |    +--- TKNUM
+|            |                            |        |        |        |        |        +--- OPERATOR
+|            |                            |        |        |        |        |        |    +--- ARITHMETIC
+|            |                            |        |        |        |        |        |        +--- TKADD
+|            |                            |        |        |        |        |        +--- EXPR
+|            |                            |        |        |        |        |            +--- TKNUM
+|            |                            |        |        |        |        +--- TKSEMICOLON
+|            |                            |        |        |        +--- STMTS
+|            |                            |        |        |            +--- STMT
+|            |                            |        |        |                +--- ASSIGNMENT
+|            |                            |        |        |                    +--- TKVARID
+|            |                            |        |        |                    +--- ASSIGNOP
+|            |                            |        |        |                    |    +--- TKASSIGN
+|            |                            |        |        |                    +--- EXPR
+|            |                            |        |        |                    |    +--- EXPR
+|            |                            |        |        |                    |    |    +--- TKVARID
+|            |                            |        |        |                    |    +--- OPERATOR
+|            |                            |        |        |                    |    |    +--- ARITHMETIC
+|            |                            |        |        |                    |    |        +--- TKADD
+|            |                            |        |        |                    |    +--- EXPR
+|            |                            |        |        |                    |        +--- TKVARID
+|            |                            |        |        |                    +--- TKSEMICOLON
+|            |                            |        |        +--- TKFLOWCLOSED
+|            |                            |        +--- TKELSE
+|            |                            |        +--- CONDBODY
+|            |                            |            +--- TKFLOWOPEN
+|            |                            |            +--- STMTS
+|            |                            |            |    +--- STMT
+|            |                            |            |        +--- ASSIGNMENT
+|            |                            |            |            +--- TKVARID
+|            |                            |            |            +--- ASSIGNOP
+|            |                            |            |            |    +--- TKASSIGN
+|            |                            |            |            +--- EXPR
+|            |                            |            |            |    +--- TKNUM
+|            |                            |            |            +--- TKSEMICOLON
+|            |                            |            +--- TKFLOWCLOSED
+|            |                            +--- STMTS
+|            |                                +--- STMT
+|            |                                    +--- IFELSE
+|            |                                        +--- IF
+|            |                                        |    +--- TKIF
+|            |                                        |    +--- TKSMOPEN
+|            |                                        |    +--- EXPR
+|            |                                        |    |    +--- EXPR
+|            |                                        |    |    |    +--- TKVARID
+|            |                                        |    |    +--- OPERATOR
+|            |                                        |    |    |    +--- COMPARISION
+|            |                                        |    |    |        +--- TKLT
+|            |                                        |    |    +--- EXPR
+|            |                                        |    |        +--- TKVARID
+|            |                                        |    +--- TKSMCLOSED
+|            |                                        |    +--- CONDBODY
+|            |                                        |        +--- TKFLOWOPEN
+|            |                                        |        +--- STMTS
+|            |                                        |        |    +--- STMT
+|            |                                        |        |        +--- ASSIGNMENT
+|            |                                        |        |            +--- TKVARID
+|            |                                        |        |            +--- ASSIGNOP
+|            |                                        |        |            |    +--- TKASSIGN
+|            |                                        |        |            +--- EXPR
+|            |                                        |        |            |    +--- TKNUM
+|            |                                        |        |            +--- TKSEMICOLON
+|            |                                        |        +--- TKFLOWCLOSED
+|            |                                        +--- TKELSE
+|            |                                        +--- CONDBODY
+|            |                                            +--- TKFLOWOPEN
+|            |                                            +--- STMTS
+|            |                                            |    +--- STMT
+|            |                                            |        +--- ASSIGNMENT
+|            |                                            |            +--- TKVARID
+|            |                                            |            +--- ASSIGNOP
+|            |                                            |            |    +--- TKASSIGN
+|            |                                            |            +--- EXPR
+|            |                                            |            |    +--- TKNUM
+|            |                                            |            +--- TKSEMICOLON
+|            |                                            +--- TKFLOWCLOSED
+|            +--- RETURN
+|            |    +--- TKRETURN
+|            |    +--- EXPR
+|            |    |    +--- TKNUM
+|            |    +--- TKSEMICOLON
+|            +--- TKFLOWCLOSED
