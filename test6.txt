@@ -1,6 +1,8 @@
 # If else condition
 # code to compare integers.
-Int @checkeven(Int val123){
+Int @main(){
+    Int abc12;
+    abc12 : 76 * 67+abs1434/123;
     Int ans123;
     Int ans143;
     Int ans100;
@@ -9,20 +11,5 @@ Int @checkeven(Int val123){
         ans100 : ans123*100  + 25;
         ans123 : ans123 + 43 - ans100;
     }
-    Else{
-        ans123 : 0;
-        ans100 : 5;
-    }
-    If(val123<val124){
-        ans143 : 1;
-    }
-    Else{
-        ans143 : 0;
-    }
-    Return ans123;
-}
-Int @main(){
-    Int abc12;
-    abc12 : 76 * 67+abs1434/123;
     Return 0;
 }

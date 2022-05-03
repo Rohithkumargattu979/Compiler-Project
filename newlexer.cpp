@@ -244,6 +244,7 @@ Array createNewArray(string newArray){
 // }
 // ------------------------------------------------------------------------- //
 // we should add extra params 
+stack<token> tokenStack;
 token getNextLexeme(vector<char>& buffer){ 
 	state = 1;
     string lexeme;
